@@ -1,0 +1,85 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 935a0ebd3f1394ff09a14a2dcbb09b80, type: 3}
+  m_Name: ___AgentSettings
+  m_EditorClassIdentifier: 
+  debugSenses: 1
+  drawLinesToBullets: 0
+  agentSpeed: 10
+  agentAngularSpeed: 180
+  agentAccel: 40
+  agentAmmoStart: 50
+  agentAmmoMax: 100
+  agentHealthStart: 10
+  agentHealthMax: 10
+  headAngularSpeed: 180
+  headAngleMinMax: 90
+  agentHearingDist: 4
+  agentVisionDist: 20
+  agentVisionHalfArcDeg: 45
+  agentPrefab: {fileID: 1807260770443592, guid: 0bb3779a9b88f407fa97434c7d74c6b7,
+    type: 3}
+  agentRespawnDelay: 4
+  buildWalls: 1
+  numWallsPerFloor: 2
+  wallMaxScale: {x: 8, y: 2, z: 8}
+  spawnPointProtectedRange: 2
+  wallPrefab: {fileID: 1914444500673046, guid: eb69434336e3b4a68a3c6c1fc0163099, type: 3}
+  bulletSpeed: 40
+  bulletShotDelay: 0.2
+  bulletAimVarianceDeg: 0
+  bulletLifetime: 10
+  bulletPrefab: {fileID: 1939414830027160, guid: 3dfdd648ddfc24a399506b507e0944fe,
+    type: 3}
+  spawnAtStart: 1
+  spawnDelay: 5
+  pickUpPrefab: {fileID: 1534691901162250, guid: 85edae26aee5344869fd087253f29a7f,
+    type: 3}
+  pickUpAmmoAmt: 50
+  pickUpHealthAmt: 5
+  pointsPerKill: 5
+  pointsPerDeath: -5
+  pointsPerBulletHit: 1
+  pointsPerTimeAlive: 1
+  timeAliveSeconds: 10
+  flagPrefab: {fileID: 1888527044482320, guid: d417c2ecf905f44858cc41032f9a27c0, type: 3}
+  sparkAndSmokePrefab: {fileID: 1220789232735876, guid: b02a7fbec5cc34be58c507dc93421837,
+    type: 3}
+  bulletDecalPrefab: {fileID: 1504147881951420, guid: 6afa82d70daf94b9d8dfdd415aae4537,
+    type: 3}
+  bulletDecalLifetime: 60
+  resetStatsOnLaunch: 1
+  competitors:
+  - name: JB
+    enabled: 1
+    color: {r: 0.19607843, g: 0.78431374, b: 0.023529412, a: 1}
+    prefabWithAgent: {fileID: 1807260770443592, guid: 5178342d2f0634a4494eb99645db8439,
+      type: 3}
+    points: 1
+    kills: 0
+    deaths: 1
+    bulletHits: 1
+    timeAliveCount: 0
+    activeAgent: {fileID: 0}
+    deathTime: 0
+  - name: Andre
+    enabled: 1
+    color: {r: 0.78431374, g: 0.17427428, b: 0.02352939, a: 1}
+    prefabWithAgent: {fileID: 1807260770443592, guid: 7a7ef33847f093742b34f0e6cc14e82b,
+      type: 3}
+    points: 4
+    kills: 0
+    deaths: 1
+    bulletHits: 4
+    timeAliveCount: 0
+    activeAgent: {fileID: 0}
+    deathTime: 0
