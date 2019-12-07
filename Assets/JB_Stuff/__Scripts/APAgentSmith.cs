@@ -123,7 +123,7 @@ public struct Memory
     public List<SpawnPointInfo> observedSpawnPoints;
 }
 
-public class APStudent : Agent {
+public class APAgentSmith : Agent {
     List<BotPosition> botsSeenLastFrame;
     
     public Transform        navMeshTarget;
@@ -141,10 +141,10 @@ public class APStudent : Agent {
     private void Start()
     {
         base.Start();
-        if (APStudent.MEM.observedPositions == null)
+        APAgentSmith.MEM.observedPositions = new List<BotPosition>();
+        if (APAgentSmith.MEM.observedSpawnPoints == null)
         {
-            APStudent.MEM.observedPositions = new List<BotPosition>();
-            APStudent.MEM.observedSpawnPoints = new List<SpawnPointInfo>();
+            APAgentSmith.MEM.observedSpawnPoints = new List<SpawnPointInfo>();
         }
         botsSeenLastFrame = new List<BotPosition>();
     }
@@ -179,15 +179,15 @@ public class APStudent : Agent {
                         sawSomeone = true;
                         var info = new BotPosition(si.name, si.pos, Time.time, botsSeenLastFrame.Any(oldInfo => oldInfo.name == si.name), si.health);
                         botsSeenThisFrame.Add(info);
-                        APStudent.MEM.observedPositions.Add(info);
+                        APAgentSmith.MEM.observedPositions.Add(info);
                     }
                     else if (si.type == eSensedObjectType.item && si.obj is PickUp)
                     {
                         PickUp pu = si.obj as PickUp;
                         var info = new SpawnPointInfo(pu.puType, si.pos);
-                        if (!APStudent.MEM.observedSpawnPoints.Contains(info))
+                        if (!APAgentSmith.MEM.observedSpawnPoints.Contains(info))
                         {
-                            APStudent.MEM.observedSpawnPoints.Add(info);
+                            APAgentSmith.MEM.observedSpawnPoints.Add(info);
                         }
                     }
                     break;
@@ -265,7 +265,7 @@ public class APStudent : Agent {
     {
         List<SpawnPoint> iPoints = SpawnPoint.GET_SPAWN_POINTS(SpawnPoint.eType.item);
         var pointsToExplore = (from point in iPoints
-                               where !APStudent.MEM.observedSpawnPoints.Any(info => info.pos == point.pos)
+                               where !APAgentSmith.MEM.observedSpawnPoints.Any(info => info.pos == point.pos)
                                select point.pos).ToList();
         if (pointsToExplore.Count > 0)
         {
@@ -305,7 +305,7 @@ public class APStudent : Agent {
             {
                 // Get all observed data from this bot, with the most recent data first, 
                 // up until the last time we didn't see them for two frames in a row
-                var observedData = (from botPosition in APStudent.MEM.observedPositions
+                var observedData = (from botPosition in APAgentSmith.MEM.observedPositions
                                     where botPosition.name == weakestBot.name
                                     select botPosition).Reverse().TakeWhile(botPosition => botPosition.seenLastFrame).ToList();
                 // We only care to shoot at a bot we've seen for at least 3 frames
@@ -362,10 +362,10 @@ public class APStudent : Agent {
     {
         var seekBulletUtility = ammo < 60 ? (100 - ammo) / 5 : (100 - ammo) / 15;
         var seekHealthUtility  = health < 3 ? 15 : (health < 6 ? 7 : 0);
-        var healthPickups = (from point in APStudent.MEM.observedSpawnPoints
+        var healthPickups = (from point in APAgentSmith.MEM.observedSpawnPoints
                             where point.typ == PickUp.eType.health
                             select point.pos).ToList();
-        var ammoPickups = (from point in APStudent.MEM.observedSpawnPoints
+        var ammoPickups = (from point in APAgentSmith.MEM.observedSpawnPoints
                             where point.typ == PickUp.eType.ammo
                             select point.pos).ToList();
         PickupToSeekAndUtility? healthUtil = null;
