@@ -68,26 +68,7 @@ public class APStudent : Agent {
         }
         botsSeenLastFrame = new List<BotPosition>();
     }
-
-    void Update ()
-    {
-        switch (behavior)
-        {
-            case eBehavior.toSpawn:
-                if (sPoint == null || (transform.position - sPoint.transform.position).magnitude < targetProximity ) {
-                    SpawnPoint.eType t = SpawnPoint.RANDOM_SPAWN_POINT_TYPE();
-                    List<SpawnPoint> sPoints = SpawnPoint.GET_SPAWN_POINTS(t);
-                    if (sPoints.Count == 0) {
-                        sPoint = null;
-                        break;
-                    }
-                    sPoint = sPoints[Random.Range(0,sPoints.Count)];
-                    navMeshTargetLoc = sPoint.transform.position;
-                    nmAgent.SetDestination(navMeshTargetLoc);
-                }
-                break;
-        }
-    }
+   
 
     public override void OnDrawGizmos()
     {
@@ -99,7 +80,28 @@ public class APStudent : Agent {
         }
     }
 
-    public override void AIUpdate(List<SensoryInput> inputs) {
+    public override void AIUpdate(List<SensoryInput> inputs)
+    {
+        switch (behavior)
+        {
+            case eBehavior.toSpawn:
+                if (sPoint == null || (transform.position - sPoint.transform.position).magnitude < targetProximity)
+                {
+                    SpawnPoint.eType t = SpawnPoint.RANDOM_SPAWN_POINT_TYPE();
+                    List<SpawnPoint> sPoints = SpawnPoint.GET_SPAWN_POINTS(t);
+                    if (sPoints.Count == 0)
+                    {
+                        sPoint = null;
+                        break;
+                    }
+                    sPoint = sPoints[Random.Range(0, sPoints.Count)];
+                    navMeshTargetLoc = sPoint.transform.position;
+                    nmAgent.SetDestination(navMeshTargetLoc);
+                }
+                break;
+        }
+
+
         List<BotPosition> botsSeenThisFrame = new List<BotPosition>();
 
         base.AIUpdate(inputs); // AIUpdate copies inputs into sensed
@@ -194,24 +196,24 @@ public class APStudent : Agent {
         if (possibleTargetsToShootAt.Count > 0 && ammo > 0)
         {
             var withinFacingDir = (from pTarget in possibleTargetsToShootAt
-                                   where Mathf.Abs(getAngleTo(pTarget.pos)) < ArenaManager.AGENT_SETTINGS.headAngleMinMax
+                                   where Mathf.Abs(getAngleToBody(pTarget.pos)) < ArenaManager.AGENT_SETTINGS.headAngleMinMax
                                    select pTarget).ToList();
             if (withinFacingDir.Count > 0)
             {
                 var closest = withinFacingDir[0];
                 foreach (var botPos in withinFacingDir)
                 {
-                    var closestAngle = Mathf.Abs(getAngleTo(closest.pos));
-                    var botPosAngle = Mathf.Abs(getAngleTo(botPos.pos));
+                    var closestAngle = Mathf.Abs(getAngleToHead(closest.pos));
+                    var botPosAngle = Mathf.Abs(getAngleToHead(botPos.pos));
                     if (botPosAngle < closestAngle)
                     {
                         closest = botPos;
                     }
                 }
 
-                var angleToShootAt = getAngleTo(closest.pos);
+                var angleToShootAt = getAngleToHead(closest.pos);
 
-                if (angleToShootAt <= ArenaManager.AGENT_SETTINGS.bulletAimVarianceDeg)
+                if (Mathf.Abs(angleToShootAt) <= ArenaManager.AGENT_SETTINGS.bulletAimVarianceDeg + .5)
                 {
                     Fire();
                 }
@@ -239,9 +241,13 @@ public class APStudent : Agent {
     }
 
 
-    float getAngleTo(Vector3 pos)
+    float getAngleToBody(Vector3 pos)
     {
         return Vector3.SignedAngle(transform.forward, pos - transform.position, Vector3.up);
+    }
+    float getAngleToHead(Vector3 pos)
+    {
+        return Vector3.SignedAngle(headTrans.forward, pos - transform.position, Vector3.up);
     }
 
     /// <summary>
