@@ -37,21 +37,21 @@ public class StatsViewer : MonoBehaviour {
             });
 
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
-        sb.Append("Name\tPts\tKil\tDth\tBlt\tAlv\n");
+        sb.Append("Name Pts Kil Dth Blt Alv\n");
         foreach (Competitor com in comps) {
             sb.Append("<color=");
             sb.Append(HexConverter(com.color));
             sb.Append('>');
             sb.Append(com.name);
-            sb.Append("\t\t");
+            sb.Append(" |  | ");
             sb.Append(com.points);
-            sb.Append('\t');
+            sb.Append(" | ");
             sb.Append(com.kills);
-            sb.Append('\t');
+            sb.Append(" | ");
             sb.Append(com.deaths);
-            sb.Append('\t');
+            sb.Append(" | ");
             sb.Append(com.bulletHits);
-            sb.Append('\t');
+            sb.Append(" | ");
             sb.Append(com.timeAliveCount);
             sb.Append("</color>");
             sb.Append('\n');
