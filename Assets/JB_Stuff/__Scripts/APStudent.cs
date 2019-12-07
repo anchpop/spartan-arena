@@ -6,6 +6,34 @@ using System.Linq;
 using UnityEngine.Assertions;
 
 
+// What increases our score:
+// shooting enemies (+1 point)
+// killing enemies  (+5 points)
+// staying alive    (+1 point per 10 seconds)
+
+// We also would prefer to avoid getting killed because it subtracts 5 points
+// I don't think there's any good way to avoid getting killed besides making sure you remain topped up on health
+// Maybe you could try and get behind cover but since you can't feel where your shots are coming from doing any kind of 
+// counterattack is very tricky.
+
+// Arena knowledge lasts forever and is important bc of that. Even if it's only worth 2 util a minute,
+// over the course of an hour that's 120 utils for something that really doesn't take that long.
+// So lets put a high priority on gathering game knowlege, especially at the beginning of the match.
+// Lets say gathering game info is worth 120 utils for the first 10 minutes, otherwise 0.
+
+// When we see someone, lets calculate the expected value of chasing them down and killing them.
+// This is the odds of us being able to kill them, times (their health plus 5).
+// I want to do something where I remember who is an easy kill and who isn't, but for now I'll just say each point of health of theirs
+// will take 3 bullets + 1 second to deplete. So someone with 10 health will take us 30 bullets and 10 seconds to kill for 15 points. 
+// We'll know they've been killed if they were solidly within our sight and then they disappear. \
+
+// Bullets are worth nothing on their own, but they are required for kills. So lets say the utility for getting ammo is (100-bulletsremaining)/10. 
+// Health is ez because we can just say getting health is worth 15 utils whenever our health is less than 3, or 7 whenever health is less than 6. 
+// We can calculate the time taken to get somewhere as (difference in x + difference in y)/agentspeed. 
+
+// Now how do we actually decide what to do.
+// We weigh everything we could be doing, think of how many utils its worth and divide by how much time it will take. Then do whichever is the highest.
+// sometimes we can do two things at once, like try to grab health while chasing someone, lets make sure to take that into account.
 
 
 public struct NameAndPositionToShootAt
@@ -26,27 +54,78 @@ public struct BotPosition
     public Vector3 pos;
     public float timeSeen;
     public bool seenLastFrame;
+    public int health;
 
-    public BotPosition(string name, Vector3 pos, float timeSeen, bool seenLastFrame)
+    public BotPosition(string name, Vector3 pos, float timeSeen, bool seenLastFrame, int health)
     {
         this.name = name;
         this.pos = pos;
         this.timeSeen = timeSeen;
         this.seenLastFrame = seenLastFrame;
+        this.health = health;
+    }
+}
+
+public struct SpawnPointInfo
+{
+    public PickUp.eType typ;
+    public Vector3 pos;
+
+    public SpawnPointInfo(PickUp.eType typ, Vector3 pos)
+    {
+        this.typ = typ;
+        this.pos = pos;
+    }
+}
+
+
+public struct ClosestPosToExploreAndUtility
+{
+    public Vector3 pos;
+    public float utility;
+
+    public ClosestPosToExploreAndUtility(Vector3 pos, float utility)
+    {
+        this.pos = pos;
+        this.utility = utility;
+    }
+}
+
+public struct EnemyToHuntAndUtility
+{
+    public BotPosition pos;
+    public Vector3 shootAtPosition;
+    public float utility;
+
+    public EnemyToHuntAndUtility(BotPosition pos, Vector3 shootAtPosition, float utility)
+    {
+        this.pos = pos;
+        this.shootAtPosition = shootAtPosition;
+        this.utility = utility;
+    }
+}
+
+public struct PickupToSeekAndUtility
+{
+    public Vector3 pos;
+    public float utility;
+
+    public PickupToSeekAndUtility(Vector3 pos, float utility)
+    {
+        this.pos = pos;
+        this.utility = utility;
     }
 }
 
 public struct Memory
 {
     public List<BotPosition> observedPositions;
+    public List<SpawnPointInfo> observedSpawnPoints;
 }
 
 public class APStudent : Agent {
-    public enum eBehavior { toSpawn };
     List<BotPosition> botsSeenLastFrame;
-
-    [Header("Inscribed JBAgentShooter")]
-    public eBehavior        behavior;
+    
     public Transform        navMeshTarget;
     public float            targetProximity = 1f;
 
@@ -65,6 +144,7 @@ public class APStudent : Agent {
         if (APStudent.MEM.observedPositions == null)
         {
             APStudent.MEM.observedPositions = new List<BotPosition>();
+            APStudent.MEM.observedSpawnPoints = new List<SpawnPointInfo>();
         }
         botsSeenLastFrame = new List<BotPosition>();
     }
@@ -82,27 +162,9 @@ public class APStudent : Agent {
 
     public override void AIUpdate(List<SensoryInput> inputs)
     {
-        switch (behavior)
-        {
-            case eBehavior.toSpawn:
-                if (sPoint == null || (transform.position - sPoint.transform.position).magnitude < targetProximity)
-                {
-                    SpawnPoint.eType t = SpawnPoint.RANDOM_SPAWN_POINT_TYPE();
-                    List<SpawnPoint> sPoints = SpawnPoint.GET_SPAWN_POINTS(t);
-                    if (sPoints.Count == 0)
-                    {
-                        sPoint = null;
-                        break;
-                    }
-                    sPoint = sPoints[Random.Range(0, sPoints.Count)];
-                    navMeshTargetLoc = sPoint.transform.position;
-                    nmAgent.SetDestination(navMeshTargetLoc);
-                }
-                break;
-        }
+        ExploreRandomly();
 
-
-        List<BotPosition> botsSeenThisFrame = new List<BotPosition>();
+        List < BotPosition > botsSeenThisFrame = new List<BotPosition>();
 
         base.AIUpdate(inputs); // AIUpdate copies inputs into sensed
         bool sawSomeone = false;
@@ -115,41 +177,137 @@ public class APStudent : Agent {
                     if (si.type == eSensedObjectType.enemy)
                     {
                         sawSomeone = true;
-                        var info = new BotPosition(si.name, si.pos, Time.time, botsSeenLastFrame.Any(oldInfo => oldInfo.name == si.name)); 
+                        var info = new BotPosition(si.name, si.pos, Time.time, botsSeenLastFrame.Any(oldInfo => oldInfo.name == si.name), si.health);
                         botsSeenThisFrame.Add(info);
                         APStudent.MEM.observedPositions.Add(info);
-
-                        /*
-                        // old shooting code
-                        // Check to see whether the Enemy is within the firing arc
-                        // The dot product of two vectors is the magnitude of A * the magnitude of B * cos(the angle between them)
-                        Vector3 toEnemy = si.pos - pos;
-                        if (toEnemy.magnitude < toClosestEnemy.magnitude) {
-                            toClosestEnemy = toEnemy;
+                    }
+                    else if (si.type == eSensedObjectType.item && si.obj is PickUp)
+                    {
+                        PickUp pu = si.obj as PickUp;
+                        var info = new SpawnPointInfo(pu.puType, si.pos);
+                        if (!APStudent.MEM.observedSpawnPoints.Contains(info))
+                        {
+                            APStudent.MEM.observedSpawnPoints.Add(info);
                         }
-
-                        float dotProduct = Vector3.Dot(headTrans.forward, toEnemy.normalized);
-                        float theta = Mathf.Acos(dotProduct) * Mathf.Rad2Deg;
-                        if (theta <= ArenaManager.AGENT_SETTINGS.bulletAimVarianceDeg) {
-                            if (ammo > 0) {
-                                Fire();
-                            }
-                        }
-                        */
                     }
                     break;
             }
         }
-        var possibleTargetsToShootAt = new List<NameAndPositionToShootAt>();
-        foreach (var bot in botsSeenThisFrame)
+
+
+
+
+
+        var exploration = getExplorationUtility();
+        var hunting = getHuntingUtility(botsSeenThisFrame);
+        var pickup = getSeekPickupUtility();
+
+        if (exploration.HasValue && hunting.HasValue && pickup.HasValue)
         {
-            if (bot.seenLastFrame)
+            var explorationv = exploration.Value;
+            var huntingv = hunting.Value;
+            var pickupv = pickup.Value;
+            Hunt(huntingv);
+        }
+        else if (exploration.HasValue && hunting.HasValue)
+        {
+            var explorationv = exploration.Value;
+            var huntingv = hunting.Value;
+            Hunt(huntingv);
+        }
+        else if (hunting.HasValue && pickup.HasValue)
+        {
+            var huntingv = hunting.Value;
+            var pickupv = pickup.Value;
+            Hunt(huntingv);
+        }
+        else if (exploration.HasValue && pickup.HasValue)
+        {
+            var explorationv = exploration.Value;
+            var pickupv = pickup.Value;
+            LookCenter();
+        }
+        else if (exploration.HasValue)
+        {
+            var explorationv = exploration.Value;
+            LookCenter();
+        }
+        else if (hunting.HasValue)
+        {
+            var huntingv = hunting.Value;
+            Hunt(huntingv);
+        }
+        else if (pickup.HasValue)
+        {
+            var pickupv = pickup.Value;
+            LookCenter();
+        }
+        else
+        {
+            LookCenter();
+        }
+        
+
+
+
+        
+        if (health > 0) {
+//            nmAgent.SetDestination(nmAgent.destination);
+        }
+
+
+        botsSeenLastFrame = botsSeenThisFrame;
+    }
+
+
+
+    ClosestPosToExploreAndUtility? getExplorationUtility()
+    {
+        List<SpawnPoint> iPoints = SpawnPoint.GET_SPAWN_POINTS(SpawnPoint.eType.item);
+        var pointsToExplore = (from point in iPoints
+                               where !APStudent.MEM.observedSpawnPoints.Any(info => info.pos == point.pos)
+                               select point.pos).ToList();
+        if (pointsToExplore.Count > 0)
+        {
+            var closestPoint = pointsToExplore[0];
+            foreach (var point in pointsToExplore)
+            {
+                if (getTravelTimeTo(point) < getTravelTimeTo(closestPoint))
+                {
+                    closestPoint = point;
+                }
+            }
+            return new ClosestPosToExploreAndUtility(closestPoint, (Time.time < 10 * 60 ? 120 : 1) / getTravelTimeTo(closestPoint));
+        }
+        return null;
+    }
+
+
+    EnemyToHuntAndUtility? getHuntingUtility(List<BotPosition> botsSeenThisFrame)
+    {
+        if (botsSeenThisFrame.Count > 0)
+        {
+            var weakestBot = botsSeenThisFrame[0];
+            foreach (var bot in botsSeenThisFrame)
+            {
+                if (bot.health < weakestBot.health)
+                {
+                    weakestBot = bot;
+                }
+            }
+            var shotsRequired = weakestBot.health * 3;
+            if (ammo < shotsRequired) return null;
+
+
+
+           
+            if (weakestBot.seenLastFrame)
             {
                 // Get all observed data from this bot, with the most recent data first, 
                 // up until the last time we didn't see them for two frames in a row
                 var observedData = (from botPosition in APStudent.MEM.observedPositions
-                                   where botPosition.name == bot.name
-                                   select botPosition).Reverse().TakeWhile(botPosition => botPosition.seenLastFrame).ToList();
+                                    where botPosition.name == weakestBot.name
+                                    select botPosition).Reverse().TakeWhile(botPosition => botPosition.seenLastFrame).ToList();
                 // We only care to shoot at a bot we've seen for at least 3 frames
                 var linePoints = new List<BotPosition>();
                 if (observedData.Count >= 3)
@@ -183,61 +341,62 @@ public class APStudent : Agent {
                             var targetVelocity = (oldestPos.pos - newestPos.pos) / (oldestPos.timeSeen - newestPos.timeSeen);
                             // get the position we'd need to shoot at to hit the target
                             var shouldShootAt = FirstOrderIntercept(transform.position, Vector3.zero, ArenaManager.AGENT_SETTINGS.bulletSpeed, newestPos.pos, targetVelocity);
-                            possibleTargetsToShootAt.Add(new NameAndPositionToShootAt(newestPos.name, shouldShootAt));
+                            return new EnemyToHuntAndUtility(weakestBot, shouldShootAt, (shotsRequired + 5) / (shotsRequired * 3));
                         }
 
                     }
-                    
+
                 }
 
             }
+
+
+            
         }
-
-        if (possibleTargetsToShootAt.Count > 0 && ammo > 0)
-        {
-            var withinFacingDir = (from pTarget in possibleTargetsToShootAt
-                                   where Mathf.Abs(getAngleToBody(pTarget.pos)) < ArenaManager.AGENT_SETTINGS.headAngleMinMax
-                                   select pTarget).ToList();
-            if (withinFacingDir.Count > 0)
-            {
-                var closest = withinFacingDir[0];
-                foreach (var botPos in withinFacingDir)
-                {
-                    var closestAngle = Mathf.Abs(getAngleToHead(closest.pos));
-                    var botPosAngle = Mathf.Abs(getAngleToHead(botPos.pos));
-                    if (botPosAngle < closestAngle)
-                    {
-                        closest = botPos;
-                    }
-                }
-
-                var angleToShootAt = getAngleToHead(closest.pos);
-
-                if (Mathf.Abs(angleToShootAt) <= ArenaManager.AGENT_SETTINGS.bulletAimVarianceDeg + .5)
-                {
-                    Fire();
-                }
-                else
-                {
-                    LookTheta(angleToShootAt);
-                }
-            }
-
-        }
-        else
-        {
-            LookCenter();
-        }
-
-
-
         
-        if (health > 0) {
-//            nmAgent.SetDestination(nmAgent.destination);
+        return null;
+    }
+
+
+    PickupToSeekAndUtility? getSeekPickupUtility()
+    {
+        var seekBulletUtility = ammo < 60 ? (100 - ammo) / 5 : (100 - ammo) / 15;
+        var seekHealthUtility  = health < 3 ? 15 : (health < 6 ? 7 : 0);
+        var healthPickups = (from point in APStudent.MEM.observedSpawnPoints
+                            where point.typ == PickUp.eType.health
+                            select point.pos).ToList();
+        var ammoPickups = (from point in APStudent.MEM.observedSpawnPoints
+                            where point.typ == PickUp.eType.ammo
+                            select point.pos).ToList();
+        PickupToSeekAndUtility? healthUtil = null;
+        PickupToSeekAndUtility? ammoUtil = null;
+        if (healthPickups.Count > 0)
+        {
+            var cHealth = healthPickups[0];
+            foreach (var health in healthPickups)
+            {
+                if (getTravelTimeTo(health) < getTravelTimeTo(cHealth))
+                {
+                    cHealth = health;
+                }
+            }
+            healthUtil = new PickupToSeekAndUtility(cHealth, seekHealthUtility / getTravelTimeTo(cHealth));
         }
-
-
-        botsSeenLastFrame = botsSeenThisFrame;
+        if (ammoPickups.Count > 0)
+        {
+            var cAmmo = ammoPickups[0];
+            foreach (var ammo in ammoPickups)
+            {
+                if (getTravelTimeTo(ammo) < getTravelTimeTo(cAmmo))
+                {
+                    cAmmo = ammo;
+                }
+            }
+            ammoUtil = new PickupToSeekAndUtility(cAmmo, seekHealthUtility / getTravelTimeTo(cAmmo));
+        }
+        if (ammoUtil == null) return healthUtil;
+        if (healthUtil == null) return ammoUtil;
+        return healthUtil.Value.utility > ammoUtil.Value.utility ? healthUtil : ammoUtil;
     }
 
 
@@ -250,18 +409,46 @@ public class APStudent : Agent {
         return Vector3.SignedAngle(headTrans.forward, pos - transform.position, Vector3.up);
     }
 
-    /// <summary>
-    /// This function will attempt to shoot at the target (rotating if this is not currently possible)
-    /// </summary>
-    /// <param name="target"></param>
-    void ShootAt(SensoryInput target)
+    void ExploreRandomly()
     {
-        if (target.type == eSensedObjectType.enemy) // only shoot at enemies
+        
+        if (sPoint == null || (transform.position - sPoint.transform.position).magnitude<targetProximity)
         {
-
+            SpawnPoint.eType t = SpawnPoint.RANDOM_SPAWN_POINT_TYPE();
+            List<SpawnPoint> sPoints = SpawnPoint.GET_SPAWN_POINTS(t);
+            if (sPoints.Count == 0)
+            {
+                sPoint = null;
+                return;
+            }
+            sPoint = sPoints[Random.Range(0, sPoints.Count)];
+            navMeshTargetLoc = sPoint.transform.position;
+            nmAgent.SetDestination(navMeshTargetLoc);
         }
     }
 
+    /// <summary>
+    /// This function will instruct the bot to attempt to hunt down a bot.
+    /// </summary>
+    /// <param name="target"></param>
+    void Hunt(EnemyToHuntAndUtility target)
+    {
+        var angleToShootAt = getAngleToHead(target.shootAtPosition);
+
+        if (Mathf.Abs(angleToShootAt) <= ArenaManager.AGENT_SETTINGS.bulletAimVarianceDeg + .5)
+        {
+            Fire();
+        }
+        else
+        {
+            LookTheta(angleToShootAt);
+        }
+    }
+
+    float getTravelTimeTo(Vector3 pos)
+    {
+        return (Mathf.Abs(transform.position.x - pos.x) + Mathf.Abs(transform.position.y - pos.y)) * ArenaManager.AGENT_SETTINGS.agentSpeed;
+    }
 
 
     // Code taken from https://wiki.unity3d.com/index.php/Calculating_Lead_For_Projectiles
