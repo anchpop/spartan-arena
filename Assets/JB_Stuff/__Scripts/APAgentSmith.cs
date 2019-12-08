@@ -89,6 +89,11 @@ public struct ClosestPosToExploreAndUtility
         this.pos = pos;
         this.utility = utility;
     }
+
+    public override string ToString()
+    {
+        return "Explore: " + utility.ToString();
+    }
 }
 
 public struct EnemyToHuntAndUtility
@@ -103,6 +108,11 @@ public struct EnemyToHuntAndUtility
         this.shootAtPosition = shootAtPosition;
         this.utility = utility;
     }
+
+    public override string ToString()
+    {
+        return "Hunting: " + utility.ToString();
+    }
 }
 
 public struct PickupToSeekAndUtility
@@ -115,12 +125,30 @@ public struct PickupToSeekAndUtility
         this.pos = pos;
         this.utility = utility;
     }
+
+    public override string ToString()
+    {
+        return "Pickup: " + utility.ToString();
+    }
+}
+
+public struct SpawnPointVisited
+{
+    public Vector3 pos;
+    public float time;
+
+    public SpawnPointVisited(Vector3 pos, float time)
+    {
+        this.pos = pos;
+        this.time = time;
+    }
 }
 
 public struct Memory
 {
     public List<BotPosition> observedPositions;
     public List<SpawnPointInfo> observedSpawnPoints;
+    public List<SpawnPointVisited> spawnPointsVisited;
 }
 
 public class APAgentSmith : Agent {
@@ -136,7 +164,20 @@ public class APAgentSmith : Agent {
 
     static Memory MEM;
 
-   
+
+    [TextArea]
+    [Tooltip("Doesn't do anything. Just comments shown in inspector")]
+    public string Notes = "This component shouldn't be removed, it does important stuff.";
+
+
+
+    int bulletsToDoOneDamage = 3;
+    int snagRadius = 5;
+    int healthPickupUtilityDanger = 15;
+    int healthPickup6UtilitySafer = 7;
+    int aggressiveness = 1;
+    int healthPackAttraction = 1;
+    int ammoPackAttraction = 1;
 
     private void Start()
     {
@@ -145,6 +186,10 @@ public class APAgentSmith : Agent {
         if (APAgentSmith.MEM.observedSpawnPoints == null)
         {
             APAgentSmith.MEM.observedSpawnPoints = new List<SpawnPointInfo>();
+        }
+        if (APAgentSmith.MEM.spawnPointsVisited == null)
+        {
+            APAgentSmith.MEM.spawnPointsVisited = new List<SpawnPointVisited>();
         }
         botsSeenLastFrame = new List<BotPosition>();
     }
@@ -162,8 +207,24 @@ public class APAgentSmith : Agent {
 
     public override void AIUpdate(List<SensoryInput> inputs)
     {
+        Notes = "";
         if (health > 0)
         {
+            {
+                List<SpawnPoint> sPoints = SpawnPoint.GET_SPAWN_POINTS(SpawnPoint.eType.item);
+                var nearPoints = (from point in sPoints
+                                  where (point.pos - transform.position).magnitude < targetProximity
+                                  select new SpawnPointVisited(point.pos, Time.time)).ToList();
+                if (nearPoints.Count > 0)
+                {
+                    APAgentSmith.MEM.spawnPointsVisited = (from point in APAgentSmith.MEM.spawnPointsVisited
+                                                           where point.pos != nearPoints[0].pos
+                                                           where point.time > Time.time - 60
+                                                           select point).ToList();
+                    APAgentSmith.MEM.spawnPointsVisited.Add(nearPoints[0]);
+                }
+            }
+
             List<BotPosition> botsSeenThisFrame = new List<BotPosition>();
 
             base.AIUpdate(inputs); // AIUpdate copies inputs into sensed
@@ -201,22 +262,28 @@ public class APAgentSmith : Agent {
             var exploration = getExplorationUtility();
             var hunting = getHuntingUtility(botsSeenThisFrame);
             var pickup = getSeekPickupUtility();
-
+            
+            Notes += (exploration.HasValue ? exploration.Value.ToString() : "Exploration: null") + "\n" + (hunting.HasValue ? hunting.Value.ToString() : "Hunting: null") + "\n" + (pickup.HasValue ? pickup.Value.ToString() : "Pickup: null"); 
             if (exploration.HasValue && hunting.HasValue && pickup.HasValue)
             {
                 var explorationv = exploration.Value;
                 var huntingv = hunting.Value;
                 var pickupv = pickup.Value;
-                if (huntingv.utility > explorationv.utility)
+                if (huntingv.utility >= explorationv.utility && huntingv.utility >= pickupv.utility)
                     Hunt(huntingv);
                 else
-                    Explore(explorationv);
+                {
+                    if (explorationv.utility >= pickupv.utility)
+                        Explore(explorationv);
+                    else
+                        SeekPickup(pickupv, botsSeenThisFrame);
+                }
             }
             else if (exploration.HasValue && hunting.HasValue)
             {
                 var explorationv = exploration.Value;
                 var huntingv = hunting.Value;
-                if (huntingv.utility > explorationv.utility)
+                if (huntingv.utility >= explorationv.utility)
                     Hunt(huntingv);
                 else
                     Explore(explorationv);
@@ -225,20 +292,22 @@ public class APAgentSmith : Agent {
             {
                 var huntingv = hunting.Value;
                 var pickupv = pickup.Value;
-                Hunt(huntingv);
+                if (huntingv.utility >= pickupv.utility)
+                    Hunt(huntingv);
+                else SeekPickup(pickupv, botsSeenThisFrame);
             }
             else if (exploration.HasValue && pickup.HasValue)
             {
                 var explorationv = exploration.Value;
                 var pickupv = pickup.Value;
-                LookCenter();
-                ExploreRandomly();
+                if (explorationv.utility >= pickupv.utility)
+                    Explore(explorationv);
+                else SeekPickup(pickupv, botsSeenThisFrame);
             }
             else if (exploration.HasValue)
             {
                 var explorationv = exploration.Value;
-                LookCenter();
-                ExploreRandomly();
+                Explore(explorationv);
             }
             else if (hunting.HasValue)
             {
@@ -248,24 +317,13 @@ public class APAgentSmith : Agent {
             else if (pickup.HasValue)
             {
                 var pickupv = pickup.Value;
-                LookCenter();
-                ExploreRandomly();
+                SeekPickup(pickupv, botsSeenThisFrame);
             }
             else
             {
                 LookCenter();
                 ExploreRandomly();
             }
-
-
-
-
-
-            if (health > 0)
-            {
-                //            nmAgent.SetDestination(nmAgent.destination);
-            }
-
 
             botsSeenLastFrame = botsSeenThisFrame;
         }
@@ -275,9 +333,10 @@ public class APAgentSmith : Agent {
 
     ClosestPosToExploreAndUtility? getExplorationUtility()
     {
-        List<SpawnPoint> iPoints = SpawnPoint.GET_SPAWN_POINTS(SpawnPoint.eType.item);
+        List < SpawnPoint > iPoints = SpawnPoint.GET_SPAWN_POINTS(SpawnPoint.eType.item);
         var pointsToExplore = (from point in iPoints
                                where !APAgentSmith.MEM.observedSpawnPoints.Any(info => info.pos == point.pos)
+                               where !APAgentSmith.MEM.spawnPointsVisited.Any(info => info.pos == point.pos)
                                select point.pos).ToList();
         if (pointsToExplore.Count > 0)
         {
@@ -289,7 +348,63 @@ public class APAgentSmith : Agent {
                     closestPoint = point;
                 }
             }
-            return new ClosestPosToExploreAndUtility(closestPoint, (Time.time < 10 * 60 ? 120 : 1) / getTravelTimeTo(closestPoint));
+            return new ClosestPosToExploreAndUtility(closestPoint, (Time.time < 5 * 60 ? 120 : 1) / getTravelTimeTo(closestPoint));
+        }
+        return null;
+    }
+    
+    Vector3? Lead(BotPosition bot)
+    {
+        if (bot.seenLastFrame)
+        {
+            // Get all observed data from this bot, with the most recent data first, 
+            // up until the last time we didn't see them for two frames in a row
+            var observedData = (from botPosition in APAgentSmith.MEM.observedPositions
+                                where botPosition.name == bot.name
+                                select botPosition).Reverse().TakeWhile(botPosition => botPosition.seenLastFrame).ToList();
+            // We only care to shoot at a bot we've seen for at least 3 frames
+            var linePoints = new List<BotPosition>();
+            if (observedData.Count >= 3)
+            {
+                // collect all the past info about the line the bot is traveling along
+                // past info is useful because when we get the position, we often get stale data for multiple frames in a row
+                // so by aggregating previous data we can get a much more accurate picture of the bot's velocity.
+                if (checkColinear(observedData[0].pos, observedData[1].pos, observedData[2].pos))
+                {
+                    linePoints.Add(observedData[0]);
+                    linePoints.Add(observedData[1]);
+                    linePoints.Add(observedData[2]);
+                    for (int i = 1; i < observedData.Count - 2; i++)
+                    {
+                        if (checkColinear(observedData[i].pos, observedData[i + 1].pos, observedData[i + 2].pos))
+                        {
+                            linePoints.Add(observedData[i + 2]);
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                        
+                    var newestPos = linePoints[0];
+                    var oldestPos = linePoints.Last();
+                    Assert.IsTrue(newestPos.timeSeen == Time.time, "Targeting based off stale data!");
+                    Assert.IsTrue(newestPos.name == oldestPos.name, "Targeting is mixing differnt bots together!");
+                    Assert.IsTrue(newestPos.timeSeen >= oldestPos.timeSeen, "Targeting is using data in the wrong order!");
+                    if (newestPos.timeSeen <= oldestPos.timeSeen)
+                        print("???");
+                    else if (newestPos.pos != oldestPos.pos)
+                    {
+                        var targetVelocity = (oldestPos.pos - newestPos.pos) / (oldestPos.timeSeen - newestPos.timeSeen);
+                        // get the position we'd need to shoot at to hit the target
+                        var shouldShootAt = FirstOrderIntercept(transform.position, Vector3.zero, ArenaManager.AGENT_SETTINGS.bulletSpeed, newestPos.pos, targetVelocity);
+                        return shouldShootAt;
+                    }
+
+                }
+
+            }
+
         }
         return null;
     }
@@ -307,56 +422,18 @@ public class APAgentSmith : Agent {
                     weakestBot = bot;
                 }
             }
-            var shotsRequired = weakestBot.health * 3;
+            var shotsRequired = weakestBot.health * bulletsToDoOneDamage;
             if (ammo < shotsRequired) return null;
             
            
             if (weakestBot.seenLastFrame)
             {
-                // Get all observed data from this bot, with the most recent data first, 
-                // up until the last time we didn't see them for two frames in a row
-                var observedData = (from botPosition in APAgentSmith.MEM.observedPositions
-                                    where botPosition.name == weakestBot.name
-                                    select botPosition).Reverse().TakeWhile(botPosition => botPosition.seenLastFrame).ToList();
-                // We only care to shoot at a bot we've seen for at least 3 frames
-                var linePoints = new List<BotPosition>();
-                if (observedData.Count >= 3)
+                var shouldShootAt = Lead(weakestBot);
+                if (shouldShootAt.HasValue)
                 {
-                    // collect all the past info about the line the bot is traveling along
-                    // past info is useful because when we get the position, we often get stale data for multiple frames in a row
-                    // so by aggregating previous data we can get a much more accurate picture of the bot's velocity.
-                    if (checkColinear(observedData[0].pos, observedData[1].pos, observedData[2].pos))
-                    {
-                        linePoints.Add(observedData[0]);
-                        linePoints.Add(observedData[1]);
-                        linePoints.Add(observedData[2]);
-                        for (int i = 1; i < observedData.Count - 2; i++)
-                        {
-                            if (checkColinear(observedData[i].pos, observedData[i + 1].pos, observedData[i + 2].pos))
-                            {
-                                linePoints.Add(observedData[i + 2]);
-                            }
-                            else
-                            {
-                                break;
-                            }
-                        }
-
-                        var newestPos = linePoints[0];
-                        var oldestPos = linePoints.Last();
-                        Assert.IsTrue(newestPos.timeSeen == Time.time, "Targeting based off stale data!");
-                        Assert.IsTrue(newestPos.name == oldestPos.name, "Targeting is mixing differnt bots together!");
-                        if (newestPos.pos != oldestPos.pos)
-                        {
-                            var targetVelocity = (oldestPos.pos - newestPos.pos) / (oldestPos.timeSeen - newestPos.timeSeen);
-                            // get the position we'd need to shoot at to hit the target
-                            var shouldShootAt = FirstOrderIntercept(transform.position, Vector3.zero, ArenaManager.AGENT_SETTINGS.bulletSpeed, newestPos.pos, targetVelocity);
-                            return new EnemyToHuntAndUtility(weakestBot, shouldShootAt, (shotsRequired + 5) / (shotsRequired * 3));
-                        }
-
-                    }
-
+                    return new EnemyToHuntAndUtility(weakestBot, shouldShootAt.Value, (shotsRequired + 5.0f * aggressiveness) / (shotsRequired * 3.0f));
                 }
+
 
             }
 
@@ -370,14 +447,16 @@ public class APAgentSmith : Agent {
 
     PickupToSeekAndUtility? getSeekPickupUtility()
     {
-        var seekBulletUtility = ammo < 60 ? (100 - ammo) / 5 : (100 - ammo) / 15;
-        var seekHealthUtility  = health < 3 ? 15 : (health < 6 ? 7 : 0);
+        var seekAmmoUtility = ammo < 50 ? (100 - ammo) / 5 : (100 - ammo) / 20;
+        var seekHealthUtility  = health < 3 ? healthPickupUtilityDanger : (health < 6 ? healthPickup6UtilitySafer : 0);
         var healthPickups = (from point in APAgentSmith.MEM.observedSpawnPoints
-                            where point.typ == PickUp.eType.health
-                            select point.pos).ToList();
+                             where point.typ == PickUp.eType.health
+                             where !APAgentSmith.MEM.spawnPointsVisited.Any(info => info.pos == point.pos)
+                             select point.pos).ToList();
         var ammoPickups = (from point in APAgentSmith.MEM.observedSpawnPoints
-                            where point.typ == PickUp.eType.ammo
-                            select point.pos).ToList();
+                           where point.typ == PickUp.eType.ammo
+                           where !APAgentSmith.MEM.spawnPointsVisited.Any(info => info.pos == point.pos)
+                           select point.pos).ToList();
         PickupToSeekAndUtility? healthUtil = null;
         PickupToSeekAndUtility? ammoUtil = null;
         if (healthPickups.Count > 0)
@@ -390,7 +469,7 @@ public class APAgentSmith : Agent {
                     cHealth = health;
                 }
             }
-            healthUtil = new PickupToSeekAndUtility(cHealth, seekHealthUtility / getTravelTimeTo(cHealth));
+            healthUtil = new PickupToSeekAndUtility(cHealth, healthPackAttraction * seekHealthUtility / getTravelTimeTo(cHealth));
         }
         if (ammoPickups.Count > 0)
         {
@@ -402,7 +481,7 @@ public class APAgentSmith : Agent {
                     cAmmo = ammo;
                 }
             }
-            ammoUtil = new PickupToSeekAndUtility(cAmmo, seekHealthUtility / getTravelTimeTo(cAmmo));
+            ammoUtil = new PickupToSeekAndUtility(cAmmo, ammoPackAttraction * seekAmmoUtility / getTravelTimeTo(cAmmo));
         }
         if (ammoUtil == null) return healthUtil;
         if (healthUtil == null) return ammoUtil;
@@ -421,7 +500,6 @@ public class APAgentSmith : Agent {
 
     void ExploreRandomly()
     {
-        
         if (sPoint == null || (transform.position - sPoint.transform.position).magnitude<targetProximity)
         {
             SpawnPoint.eType t = SpawnPoint.RANDOM_SPAWN_POINT_TYPE();
@@ -454,17 +532,75 @@ public class APAgentSmith : Agent {
             LookTheta(angleToShootAt);
         }
         
-        sPoint = null;
-        navMeshTargetLoc = target.pos.pos; // we navigate to them rather than to where they're going to be because we want to stay behind them
-        nmAgent.SetDestination(navMeshTargetLoc);
+        var snaggablesWithinRange = (from point in APAgentSmith.MEM.observedSpawnPoints
+                                     where !APAgentSmith.MEM.spawnPointsVisited.Any(info => info.pos == point.pos)
+                                     where (point.pos - transform.position).magnitude < snagRadius
+                                     where Vector3.Angle(point.pos - transform.position, target.pos.pos - transform.position) < 100
+                                     where (point.pos - transform.position).sqrMagnitude < (target.pos.pos - transform.position).sqrMagnitude
+                                     select point).ToList();
+        if (snaggablesWithinRange.Count > 0 && 
+              ((snaggablesWithinRange[0].typ == PickUp.eType.health && health < 10) || 
+               (snaggablesWithinRange[0].typ == PickUp.eType.ammo   && ammo   < 100)))
+        {
+            print("snagging");
+            sPoint = null;
+            navMeshTargetLoc = snaggablesWithinRange[0].pos; 
+            nmAgent.SetDestination(navMeshTargetLoc);
+        }
+        else
+        {
+            sPoint = null;
+            navMeshTargetLoc = target.pos.pos; // we navigate to them rather than to where they're going to be because we want to stay behind them
+            nmAgent.SetDestination(navMeshTargetLoc);
+        }
     }
 
     void Explore(ClosestPosToExploreAndUtility explore)
     {
+        LookCenter();
         sPoint = null;
         if (navMeshTargetLoc != explore.pos)
         {
             navMeshTargetLoc = explore.pos;
+            nmAgent.SetDestination(navMeshTargetLoc);
+        }
+    }
+
+
+    void SeekPickup(PickupToSeekAndUtility pickup, List<BotPosition> botsSeenThisFrame)
+    {
+        //print("seeking pickup at " + pickup.pos + " | health: " + health + " | ammo: " + ammo );
+        var toShootAt = (from bot in botsSeenThisFrame
+                         where Lead(bot).HasValue
+                         select Lead(bot).Value).ToList();
+        if (toShootAt.Count > 0 && ammo > 0)
+        {
+            var target = toShootAt[0];
+            foreach (var possibleTarget in toShootAt)
+            {
+                if (Mathf.Abs(getAngleToHead(possibleTarget)) < Mathf.Abs(getAngleToHead(target)))
+                {
+                    target = possibleTarget;
+                }
+            }
+            var angleToShootAt = getAngleToHead(target);
+            if (Mathf.Abs(angleToShootAt) <= ArenaManager.AGENT_SETTINGS.bulletAimVarianceDeg + .5)
+            {
+                Fire();
+            }
+            else
+            {
+                LookTheta(angleToShootAt);
+            }
+        }
+        else
+        {
+            LookCenter();
+        }
+        sPoint = null;
+        if (navMeshTargetLoc != pickup.pos)
+        {
+            navMeshTargetLoc = pickup.pos;
             nmAgent.SetDestination(navMeshTargetLoc);
         }
     }
@@ -492,7 +628,6 @@ public class APAgentSmith : Agent {
                     lng += Vector3.Distance(p.corners[i - 1], p.corners[i]);
                 }
             }
-
             return lng;
         }
 
