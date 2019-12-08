@@ -59,28 +59,28 @@ MonoBehaviour:
   bulletDecalLifetime: 60
   resetStatsOnLaunch: 1
   competitors:
-  - name: ZDl
+  - name: ZD0
     enabled: 1
     color: {r: 0.19607843, g: 0.78431374, b: 0.023529412, a: 1}
     prefabWithAgent: {fileID: 1807260770443592, guid: 7a7ef33847f093742b34f0e6cc14e82b,
       type: 3}
-    points: 0
-    kills: 0
+    points: 138
+    kills: 12
     deaths: 1
-    bulletHits: 0
-    timeAliveCount: 0
+    bulletHits: 72
+    timeAliveCount: 6
     activeAgent: {fileID: 0}
     deathTime: 0
-  - name: JB1
+  - name: ZD1
     enabled: 1
-    color: {r: 0.78431374, g: 0.17427428, b: 0.02352939, a: 1}
-    prefabWithAgent: {fileID: 1807260770443592, guid: 5178342d2f0634a4494eb99645db8439,
+    color: {r: 0.4649561, g: 0.78431374, b: 0.02352939, a: 1}
+    prefabWithAgent: {fileID: 1807260770443592, guid: 2928d36b692b1a149a4c518f282647f7,
       type: 3}
-    points: 0
-    kills: 0
-    deaths: 1
-    bulletHits: 0
-    timeAliveCount: 0
+    points: 73
+    kills: 5
+    deaths: 3
+    bulletHits: 54
+    timeAliveCount: 4
     activeAgent: {fileID: 0}
     deathTime: 0
   - name: JB2
@@ -88,11 +88,11 @@ MonoBehaviour:
     color: {r: 0.78431374, g: 0.17427428, b: 0.02352939, a: 1}
     prefabWithAgent: {fileID: 1807260770443592, guid: 5178342d2f0634a4494eb99645db8439,
       type: 3}
-    points: 0
+    points: 12
     kills: 0
-    deaths: 1
-    bulletHits: 0
-    timeAliveCount: 0
+    deaths: 2
+    bulletHits: 13
+    timeAliveCount: 4
     activeAgent: {fileID: 0}
     deathTime: 0
   - name: JB3
@@ -100,82 +100,118 @@ MonoBehaviour:
     color: {r: 0.78431374, g: 0.17427428, b: 0.02352939, a: 1}
     prefabWithAgent: {fileID: 1807260770443592, guid: 5178342d2f0634a4494eb99645db8439,
       type: 3}
-    points: 0
-    kills: 0
-    deaths: 1
-    bulletHits: 2
-    timeAliveCount: 0
+    points: 31
+    kills: 2
+    deaths: 4
+    bulletHits: 32
+    timeAliveCount: 4
     activeAgent: {fileID: 0}
     deathTime: 0
-  - name: JB4
+  - name: ZD3
     enabled: 1
-    color: {r: 0.78431374, g: 0.17427428, b: 0.02352939, a: 1}
-    prefabWithAgent: {fileID: 1807260770443592, guid: 5178342d2f0634a4494eb99645db8439,
+    color: {r: 0.62199455, g: 0.78431374, b: 0.02352939, a: 1}
+    prefabWithAgent: {fileID: 1807260770443592, guid: ebf70d2083ea4254f9a314ba7a8c1e0e,
       type: 3}
-    points: 13
-    kills: 1
-    deaths: 1
-    bulletHits: 8
-    timeAliveCount: 0
+    points: 33
+    kills: 3
+    deaths: 3
+    bulletHits: 24
+    timeAliveCount: 4
     activeAgent: {fileID: 0}
     deathTime: 0
-  - name: JB5
+  - name: ZD4
     enabled: 1
-    color: {r: 0.78431374, g: 0.17427428, b: 0.02352939, a: 1}
-    prefabWithAgent: {fileID: 1807260770443592, guid: 5178342d2f0634a4494eb99645db8439,
+    color: {r: 0.62199455, g: 0.78431374, b: 0.02352939, a: 1}
+    prefabWithAgent: {fileID: 1807260770443592, guid: ef7a16e2b1f1d1244bcaab5aefe708f9,
       type: 3}
-    points: -5
-    kills: 0
-    deaths: 1
-    bulletHits: 0
-    timeAliveCount: 0
-    activeAgent: {fileID: 0}
-    deathTime: 3.48
-  - name: JB6
-    enabled: 1
-    color: {r: 0.78431374, g: 0.17427428, b: 0.02352939, a: 1}
-    prefabWithAgent: {fileID: 1807260770443592, guid: 5178342d2f0634a4494eb99645db8439,
-      type: 3}
-    points: 2
-    kills: 0
-    deaths: 1
-    bulletHits: 2
-    timeAliveCount: 0
+    points: 33
+    kills: 3
+    deaths: 3
+    bulletHits: 24
+    timeAliveCount: 4
     activeAgent: {fileID: 0}
     deathTime: 0
-  - name: JB7
+  - name: ZD5
     enabled: 1
-    color: {r: 0.78431374, g: 0.17427428, b: 0.02352939, a: 1}
-    prefabWithAgent: {fileID: 1807260770443592, guid: 5178342d2f0634a4494eb99645db8439,
+    color: {r: 0.62199455, g: 0.78431374, b: 0.02352939, a: 1}
+    prefabWithAgent: {fileID: 1807260770443592, guid: b09f2b0f77226224e842795ae62e11e5,
       type: 3}
-    points: 0
-    kills: 0
-    deaths: 1
-    bulletHits: 0
-    timeAliveCount: 0
+    points: 33
+    kills: 3
+    deaths: 3
+    bulletHits: 24
+    timeAliveCount: 4
     activeAgent: {fileID: 0}
     deathTime: 0
-  - name: JB8
+  - name: ZD6
     enabled: 1
-    color: {r: 0.78431374, g: 0.17427428, b: 0.02352939, a: 1}
-    prefabWithAgent: {fileID: 1807260770443592, guid: 5178342d2f0634a4494eb99645db8439,
+    color: {r: 0.62199455, g: 0.78431374, b: 0.02352939, a: 1}
+    prefabWithAgent: {fileID: 1807260770443592, guid: 3fb23e363b17e254aa4c55f1bf1ee728,
       type: 3}
-    points: 0
-    kills: 0
-    deaths: 1
-    bulletHits: 0
-    timeAliveCount: 0
+    points: 33
+    kills: 3
+    deaths: 3
+    bulletHits: 24
+    timeAliveCount: 4
     activeAgent: {fileID: 0}
     deathTime: 0
-  - name: JB9
+  - name: ZD7
     enabled: 1
-    color: {r: 0.78431374, g: 0.17427428, b: 0.02352939, a: 1}
-    prefabWithAgent: {fileID: 1807260770443592, guid: 5178342d2f0634a4494eb99645db8439,
+    color: {r: 0.62199455, g: 0.78431374, b: 0.02352939, a: 1}
+    prefabWithAgent: {fileID: 1807260770443592, guid: 370d62f52614b4f43a27b80f5954be78,
       type: 3}
-    points: 0
-    kills: 0
-    deaths: 1
-    bulletHits: 0
-    timeAliveCount: 0
+    points: 33
+    kills: 3
+    deaths: 3
+    bulletHits: 24
+    timeAliveCount: 4
+    activeAgent: {fileID: 0}
+    deathTime: 0
+  - name: ZD8
+    enabled: 1
+    color: {r: 0.62199455, g: 0.78431374, b: 0.02352939, a: 1}
+    prefabWithAgent: {fileID: 1807260770443592, guid: af31a93c5465f2f4bbb1dd743f8fb153,
+      type: 3}
+    points: 33
+    kills: 3
+    deaths: 3
+    bulletHits: 24
+    timeAliveCount: 4
+    activeAgent: {fileID: 0}
+    deathTime: 0
+  - name: ZD9
+    enabled: 1
+    color: {r: 0.62199455, g: 0.78431374, b: 0.02352939, a: 1}
+    prefabWithAgent: {fileID: 1807260770443592, guid: 65166cc5d55cfa14a9a97efb6e4e9c91,
+      type: 3}
+    points: 33
+    kills: 3
+    deaths: 3
+    bulletHits: 24
+    timeAliveCount: 4
+    activeAgent: {fileID: 0}
+    deathTime: 0
+  - name: ZD10
+    enabled: 1
+    color: {r: 0.62199455, g: 0.78431374, b: 0.02352939, a: 1}
+    prefabWithAgent: {fileID: 1807260770443592, guid: ea6b0123cca020749a5571d00a7d9d04,
+      type: 3}
+    points: 33
+    kills: 3
+    deaths: 3
+    bulletHits: 24
+    timeAliveCount: 4
+    activeAgent: {fileID: 0}
+    deathTime: 0
+  - name: ZD2
+    enabled: 1
+    color: {r: 0.62199455, g: 0.78431374, b: 0.02352939, a: 1}
+    prefabWithAgent: {fileID: 1807260770443592, guid: cbdd1326ebd5a654a8b3a858e189c717,
+      type: 3}
+    points: 33
+    kills: 3
+    deaths: 3
+    bulletHits: 24
+    timeAliveCount: 4
     activeAgent: {fileID: 0}
     deathTime: 0
