@@ -309,9 +309,7 @@ public class APAgentSmith : Agent {
             }
             var shotsRequired = weakestBot.health * 3;
             if (ammo < shotsRequired) return null;
-
-
-
+            
            
             if (weakestBot.seenLastFrame)
             {
@@ -445,7 +443,6 @@ public class APAgentSmith : Agent {
     /// <param name="target"></param>
     void Hunt(EnemyToHuntAndUtility target)
     {
-        print("hunting");
         var angleToShootAt = getAngleToHead(target.shootAtPosition);
 
         if (Mathf.Abs(angleToShootAt) <= ArenaManager.AGENT_SETTINGS.bulletAimVarianceDeg + .5)
@@ -458,13 +455,12 @@ public class APAgentSmith : Agent {
         }
         
         sPoint = null;
-        navMeshTargetLoc = target.pos.pos;
+        navMeshTargetLoc = target.pos.pos; // we navigate to them rather than to where they're going to be because we want to stay behind them
         nmAgent.SetDestination(navMeshTargetLoc);
     }
 
     void Explore(ClosestPosToExploreAndUtility explore)
     {
-        print("exploring target at " + explore.pos);
         sPoint = null;
         if (navMeshTargetLoc != explore.pos)
         {
