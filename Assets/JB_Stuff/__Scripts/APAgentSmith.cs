@@ -149,6 +149,17 @@ public struct Memory
     public List<BotPosition> observedPositions;
     public List<SpawnPointInfo> observedSpawnPoints;
     public List<SpawnPointVisited> spawnPointsVisited;
+
+    public float bulletsToDoOneDamageStored;
+    public float snagRadiusStored;
+    public float healthPickupUtilityDangerStored;
+    public float healthPickupUtilitySaferStored;
+    public float healthPickupUtilitySafeStored;
+    public float aggressivenessStored;
+    public float healthPackAttractionStored;
+    public float ammoPackAttractionStored;
+
+    public bool alreadyRandomized;
 }
 
 public class APAgentSmith : Agent {
@@ -169,15 +180,18 @@ public class APAgentSmith : Agent {
     [Tooltip("Doesn't do anything. Just comments shown in inspector")]
     public string Notes = "This component shouldn't be removed, it does important stuff.";
 
+    [TextArea]
+    [Tooltip("Doesn't do anything. Just comments shown in inspector")]
+    public string Stats = "This component shouldn't be removed, it does important stuff.";
 
-
-    int bulletsToDoOneDamage = 3;
-    int snagRadius = 5;
-    int healthPickupUtilityDanger = 15;
-    int healthPickup6UtilitySafer = 7;
-    int aggressiveness = 1;
-    int healthPackAttraction = 1;
-    int ammoPackAttraction = 1;
+    float bulletsToDoOneDamage = 3;
+    float snagRadius = 5;
+    float healthPickupUtilityDanger = 15;
+    float healthPickupUtilitySafer  = 7;
+    float healthPickupUtilitySafe = 1;
+    float aggressiveness = 1;
+    float healthPackAttraction = 1;
+    float ammoPackAttraction = 1;
 
     private void Start()
     {
@@ -186,12 +200,15 @@ public class APAgentSmith : Agent {
         if (APAgentSmith.MEM.observedSpawnPoints == null)
         {
             APAgentSmith.MEM.observedSpawnPoints = new List<SpawnPointInfo>();
+            APAgentSmith.MEM.alreadyRandomized = false;
         }
         if (APAgentSmith.MEM.spawnPointsVisited == null)
         {
             APAgentSmith.MEM.spawnPointsVisited = new List<SpawnPointVisited>();
+            APAgentSmith.MEM.alreadyRandomized = false;
         }
         botsSeenLastFrame = new List<BotPosition>();
+        RandomizeParameters();
     }
    
 
@@ -203,6 +220,54 @@ public class APAgentSmith : Agent {
             Gizmos.color = Color.white;
             Gizmos.DrawLine(transform.position+transform.up/2, navMeshTargetLoc+transform.up/2);
         }
+    }
+
+    void RandomizeParameters()
+    {
+
+        Stats = "";
+        if (!APAgentSmith.MEM.alreadyRandomized)
+        {
+            bulletsToDoOneDamage += Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f);
+            snagRadius += Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f);
+            healthPickupUtilityDanger += Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f);
+            healthPickupUtilitySafer += Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f);
+            healthPickupUtilitySafe += Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f);
+            aggressiveness += Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f);
+            healthPackAttraction += Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f);
+            ammoPackAttraction += Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f);
+
+
+            APAgentSmith.MEM.bulletsToDoOneDamageStored = bulletsToDoOneDamage;
+            APAgentSmith.MEM.snagRadiusStored = snagRadius;
+            APAgentSmith.MEM.healthPickupUtilityDangerStored = healthPickupUtilityDanger;
+            APAgentSmith.MEM.healthPickupUtilitySaferStored = healthPickupUtilitySafer;
+            APAgentSmith.MEM.healthPickupUtilitySafeStored = healthPickupUtilitySafe;
+            APAgentSmith.MEM.aggressivenessStored = aggressiveness;
+            APAgentSmith.MEM.healthPackAttractionStored = healthPackAttraction;
+            APAgentSmith.MEM.ammoPackAttractionStored = ammoPackAttraction;
+
+            APAgentSmith.MEM.alreadyRandomized = true;
+        }
+        else
+        {
+            bulletsToDoOneDamage = APAgentSmith.MEM.bulletsToDoOneDamageStored;
+            snagRadius = APAgentSmith.MEM.snagRadiusStored;
+            healthPickupUtilityDanger = APAgentSmith.MEM.healthPickupUtilityDangerStored;
+            healthPickupUtilitySafer = APAgentSmith.MEM.healthPickupUtilitySaferStored;
+            healthPickupUtilitySafe = APAgentSmith.MEM.healthPickupUtilitySafeStored;
+            aggressiveness = APAgentSmith.MEM.aggressivenessStored;
+            healthPackAttraction = APAgentSmith.MEM.healthPackAttractionStored;
+            ammoPackAttraction = APAgentSmith.MEM.ammoPackAttractionStored;
+        }
+        Stats += "bulletsToDoOneDamage: " + bulletsToDoOneDamage + "\n";
+        Stats += "snagRadius: " + snagRadius + "\n";
+        Stats += "healthPickupUtilityDanger: " + healthPickupUtilityDanger + "\n";
+        Stats += "healthPickupUtilitySafer: " + healthPickupUtilitySafer + "\n";
+        Stats += "healthPickupUtilitySafe: " + healthPickupUtilitySafe + "\n";
+        Stats += "aggressiveness: " + aggressiveness + "\n";
+        Stats += "healthPackAttraction: " + bulletsToDoOneDamage + "\n";
+        Stats += "ammoPackAttraction: " + ammoPackAttraction + "\n";
     }
 
     public override void AIUpdate(List<SensoryInput> inputs)
@@ -240,7 +305,8 @@ public class APAgentSmith : Agent {
                             sawSomeone = true;
                             var info = new BotPosition(si.name, si.pos, Time.time, botsSeenLastFrame.Any(oldInfo => oldInfo.name == si.name), si.health);
                             botsSeenThisFrame.Add(info);
-                            APAgentSmith.MEM.observedPositions.Add(info);
+                            if (!APAgentSmith.MEM.observedPositions.Contains(info))
+                                APAgentSmith.MEM.observedPositions.Add(info);
                         }
                         else if (si.type == eSensedObjectType.item && si.obj is PickUp)
                         {
@@ -274,7 +340,7 @@ public class APAgentSmith : Agent {
                 else
                 {
                     if (explorationv.utility >= pickupv.utility)
-                        Explore(explorationv);
+                        Explore(explorationv, botsSeenThisFrame);
                     else
                         SeekPickup(pickupv, botsSeenThisFrame);
                 }
@@ -286,7 +352,7 @@ public class APAgentSmith : Agent {
                 if (huntingv.utility >= explorationv.utility)
                     Hunt(huntingv);
                 else
-                    Explore(explorationv);
+                    Explore(explorationv, botsSeenThisFrame);
             }
             else if (hunting.HasValue && pickup.HasValue)
             {
@@ -301,13 +367,13 @@ public class APAgentSmith : Agent {
                 var explorationv = exploration.Value;
                 var pickupv = pickup.Value;
                 if (explorationv.utility >= pickupv.utility)
-                    Explore(explorationv);
+                    Explore(explorationv, botsSeenThisFrame);
                 else SeekPickup(pickupv, botsSeenThisFrame);
             }
             else if (exploration.HasValue)
             {
                 var explorationv = exploration.Value;
-                Explore(explorationv);
+                Explore(explorationv, botsSeenThisFrame);
             }
             else if (hunting.HasValue)
             {
@@ -448,7 +514,7 @@ public class APAgentSmith : Agent {
     PickupToSeekAndUtility? getSeekPickupUtility()
     {
         var seekAmmoUtility = ammo < 50 ? (100 - ammo) / 5 : (100 - ammo) / 20;
-        var seekHealthUtility  = health < 3 ? healthPickupUtilityDanger : (health < 6 ? healthPickup6UtilitySafer : 0);
+        var seekHealthUtility  = health < 3 ? healthPickupUtilityDanger : (health < 6 ? healthPickupUtilitySafer : (health < 10 ? healthPickupUtilitySafe : 0));
         var healthPickups = (from point in APAgentSmith.MEM.observedSpawnPoints
                              where point.typ == PickUp.eType.health
                              where !APAgentSmith.MEM.spawnPointsVisited.Any(info => info.pos == point.pos)
@@ -510,8 +576,61 @@ public class APAgentSmith : Agent {
                 return;
             }
             sPoint = sPoints[Random.Range(0, sPoints.Count)];
-            navMeshTargetLoc = sPoint.transform.position;
-            nmAgent.SetDestination(navMeshTargetLoc);
+            SetDestination(sPoint.transform.position);
+        }
+    }
+
+    void SetDestination(Vector3 dest)
+    {
+        if (health > 0)
+        {
+            var path = new NavMeshPath();
+            var calculatedSucess = NavMesh.CalculatePath(transform.position, dest, NavMesh.AllAreas, path);
+            if (calculatedSucess)
+            {
+                navMeshTargetLoc = dest;
+                var setSuccess = nmAgent.SetPath(path);
+                if (!setSuccess)
+                {
+                    print("path not set sucessfully!");
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Will attemt to look at and shoot nearby bots, or look towards the center if none are in sight.
+    /// </summary>
+    /// <param name="botsSeenThisFrame"></param>
+    void ShootOpprotunistically(List<BotPosition> botsSeenThisFrame)
+    {
+        var toShootAt = (from bot in botsSeenThisFrame
+                         where Lead(bot).HasValue
+                         where Mathf.Abs(getAngleToBody(Lead(bot).Value)) < 90
+                         select Lead(bot).Value).ToList();
+        if (toShootAt.Count > 0 && ammo > 0)
+        {
+            var target = toShootAt[0];
+            foreach (var possibleTarget in toShootAt)
+            {
+                if (Mathf.Abs(getAngleToHead(possibleTarget)) < Mathf.Abs(getAngleToHead(target)))
+                {
+                    target = possibleTarget;
+                }
+            }
+            var angleToShootAt = getAngleToHead(target);
+            if (Mathf.Abs(angleToShootAt) <= ArenaManager.AGENT_SETTINGS.bulletAimVarianceDeg + .5)
+            {
+                Fire();
+            }
+            else
+            {
+                LookTheta(angleToShootAt);
+            }
+        }
+        else
+        {
+            LookCenter();
         }
     }
 
@@ -544,25 +663,23 @@ public class APAgentSmith : Agent {
         {
             print("snagging");
             sPoint = null;
-            navMeshTargetLoc = snaggablesWithinRange[0].pos; 
-            nmAgent.SetDestination(navMeshTargetLoc);
+            SetDestination(snaggablesWithinRange[0].pos);
         }
         else
         {
             sPoint = null;
-            navMeshTargetLoc = target.pos.pos; // we navigate to them rather than to where they're going to be because we want to stay behind them
-            nmAgent.SetDestination(navMeshTargetLoc);
+
+            SetDestination(target.pos.pos); // we navigate to them rather than to where they're going to be because we want to stay behind them
         }
     }
 
-    void Explore(ClosestPosToExploreAndUtility explore)
+    void Explore(ClosestPosToExploreAndUtility explore, List<BotPosition> botsSeenThisFrame)
     {
-        LookCenter();
+        ShootOpprotunistically(botsSeenThisFrame);
         sPoint = null;
         if (navMeshTargetLoc != explore.pos)
         {
-            navMeshTargetLoc = explore.pos;
-            nmAgent.SetDestination(navMeshTargetLoc);
+            SetDestination(explore.pos);
         }
     }
 
@@ -570,38 +687,11 @@ public class APAgentSmith : Agent {
     void SeekPickup(PickupToSeekAndUtility pickup, List<BotPosition> botsSeenThisFrame)
     {
         //print("seeking pickup at " + pickup.pos + " | health: " + health + " | ammo: " + ammo );
-        var toShootAt = (from bot in botsSeenThisFrame
-                         where Lead(bot).HasValue
-                         select Lead(bot).Value).ToList();
-        if (toShootAt.Count > 0 && ammo > 0)
-        {
-            var target = toShootAt[0];
-            foreach (var possibleTarget in toShootAt)
-            {
-                if (Mathf.Abs(getAngleToHead(possibleTarget)) < Mathf.Abs(getAngleToHead(target)))
-                {
-                    target = possibleTarget;
-                }
-            }
-            var angleToShootAt = getAngleToHead(target);
-            if (Mathf.Abs(angleToShootAt) <= ArenaManager.AGENT_SETTINGS.bulletAimVarianceDeg + .5)
-            {
-                Fire();
-            }
-            else
-            {
-                LookTheta(angleToShootAt);
-            }
-        }
-        else
-        {
-            LookCenter();
-        }
+        ShootOpprotunistically(botsSeenThisFrame);
         sPoint = null;
         if (navMeshTargetLoc != pickup.pos)
         {
-            navMeshTargetLoc = pickup.pos;
-            nmAgent.SetDestination(navMeshTargetLoc);
+            SetDestination(pickup.pos);
         }
     }
 
