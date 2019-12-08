@@ -162,101 +162,113 @@ public class APAgentSmith : Agent {
 
     public override void AIUpdate(List<SensoryInput> inputs)
     {
-        ExploreRandomly();
-
-        List < BotPosition > botsSeenThisFrame = new List<BotPosition>();
-
-        base.AIUpdate(inputs); // AIUpdate copies inputs into sensed
-        bool sawSomeone = false;
-        Vector3 toClosestEnemy = Vector3.one * 1000;
-        foreach (SensoryInput si in sensed)
+        if (health > 0)
         {
-            switch (si.sense)
+            List<BotPosition> botsSeenThisFrame = new List<BotPosition>();
+
+            base.AIUpdate(inputs); // AIUpdate copies inputs into sensed
+            bool sawSomeone = false;
+            Vector3 toClosestEnemy = Vector3.one * 1000;
+            foreach (SensoryInput si in sensed)
             {
-                case SensoryInput.eSense.vision:
-                    if (si.type == eSensedObjectType.enemy)
-                    {
-                        sawSomeone = true;
-                        var info = new BotPosition(si.name, si.pos, Time.time, botsSeenLastFrame.Any(oldInfo => oldInfo.name == si.name), si.health);
-                        botsSeenThisFrame.Add(info);
-                        APAgentSmith.MEM.observedPositions.Add(info);
-                    }
-                    else if (si.type == eSensedObjectType.item && si.obj is PickUp)
-                    {
-                        PickUp pu = si.obj as PickUp;
-                        var info = new SpawnPointInfo(pu.puType, si.pos);
-                        if (!APAgentSmith.MEM.observedSpawnPoints.Contains(info))
+                switch (si.sense)
+                {
+                    case SensoryInput.eSense.vision:
+                        if (si.type == eSensedObjectType.enemy)
                         {
-                            APAgentSmith.MEM.observedSpawnPoints.Add(info);
+                            sawSomeone = true;
+                            var info = new BotPosition(si.name, si.pos, Time.time, botsSeenLastFrame.Any(oldInfo => oldInfo.name == si.name), si.health);
+                            botsSeenThisFrame.Add(info);
+                            APAgentSmith.MEM.observedPositions.Add(info);
                         }
-                    }
-                    break;
+                        else if (si.type == eSensedObjectType.item && si.obj is PickUp)
+                        {
+                            PickUp pu = si.obj as PickUp;
+                            var info = new SpawnPointInfo(pu.puType, si.pos);
+                            if (!APAgentSmith.MEM.observedSpawnPoints.Contains(info))
+                            {
+                                APAgentSmith.MEM.observedSpawnPoints.Add(info);
+                            }
+                        }
+                        break;
+                }
             }
+
+
+
+
+
+            var exploration = getExplorationUtility();
+            var hunting = getHuntingUtility(botsSeenThisFrame);
+            var pickup = getSeekPickupUtility();
+
+            if (exploration.HasValue && hunting.HasValue && pickup.HasValue)
+            {
+                var explorationv = exploration.Value;
+                var huntingv = hunting.Value;
+                var pickupv = pickup.Value;
+                if (huntingv.utility > explorationv.utility)
+                    Hunt(huntingv);
+                else
+                    Explore(explorationv);
+            }
+            else if (exploration.HasValue && hunting.HasValue)
+            {
+                var explorationv = exploration.Value;
+                var huntingv = hunting.Value;
+                if (huntingv.utility > explorationv.utility)
+                    Hunt(huntingv);
+                else
+                    Explore(explorationv);
+            }
+            else if (hunting.HasValue && pickup.HasValue)
+            {
+                var huntingv = hunting.Value;
+                var pickupv = pickup.Value;
+                Hunt(huntingv);
+            }
+            else if (exploration.HasValue && pickup.HasValue)
+            {
+                var explorationv = exploration.Value;
+                var pickupv = pickup.Value;
+                LookCenter();
+                ExploreRandomly();
+            }
+            else if (exploration.HasValue)
+            {
+                var explorationv = exploration.Value;
+                LookCenter();
+                ExploreRandomly();
+            }
+            else if (hunting.HasValue)
+            {
+                var huntingv = hunting.Value;
+                Hunt(huntingv);
+            }
+            else if (pickup.HasValue)
+            {
+                var pickupv = pickup.Value;
+                LookCenter();
+                ExploreRandomly();
+            }
+            else
+            {
+                LookCenter();
+                ExploreRandomly();
+            }
+
+
+
+
+
+            if (health > 0)
+            {
+                //            nmAgent.SetDestination(nmAgent.destination);
+            }
+
+
+            botsSeenLastFrame = botsSeenThisFrame;
         }
-
-
-
-
-
-        var exploration = getExplorationUtility();
-        var hunting = getHuntingUtility(botsSeenThisFrame);
-        var pickup = getSeekPickupUtility();
-
-        if (exploration.HasValue && hunting.HasValue && pickup.HasValue)
-        {
-            var explorationv = exploration.Value;
-            var huntingv = hunting.Value;
-            var pickupv = pickup.Value;
-            Hunt(huntingv);
-        }
-        else if (exploration.HasValue && hunting.HasValue)
-        {
-            var explorationv = exploration.Value;
-            var huntingv = hunting.Value;
-            Hunt(huntingv);
-        }
-        else if (hunting.HasValue && pickup.HasValue)
-        {
-            var huntingv = hunting.Value;
-            var pickupv = pickup.Value;
-            Hunt(huntingv);
-        }
-        else if (exploration.HasValue && pickup.HasValue)
-        {
-            var explorationv = exploration.Value;
-            var pickupv = pickup.Value;
-            LookCenter();
-        }
-        else if (exploration.HasValue)
-        {
-            var explorationv = exploration.Value;
-            LookCenter();
-        }
-        else if (hunting.HasValue)
-        {
-            var huntingv = hunting.Value;
-            Hunt(huntingv);
-        }
-        else if (pickup.HasValue)
-        {
-            var pickupv = pickup.Value;
-            LookCenter();
-        }
-        else
-        {
-            LookCenter();
-        }
-        
-
-
-
-        
-        if (health > 0) {
-//            nmAgent.SetDestination(nmAgent.destination);
-        }
-
-
-        botsSeenLastFrame = botsSeenThisFrame;
     }
 
 
@@ -428,11 +440,12 @@ public class APAgentSmith : Agent {
     }
 
     /// <summary>
-    /// This function will instruct the bot to attempt to hunt down a bot.
+    /// This function will instruct the bot to attempt to hunt down a target. It does this by moving to the target's position and trying to shoot where it's going to be.
     /// </summary>
     /// <param name="target"></param>
     void Hunt(EnemyToHuntAndUtility target)
     {
+        print("hunting");
         var angleToShootAt = getAngleToHead(target.shootAtPosition);
 
         if (Mathf.Abs(angleToShootAt) <= ArenaManager.AGENT_SETTINGS.bulletAimVarianceDeg + .5)
@@ -443,11 +456,55 @@ public class APAgentSmith : Agent {
         {
             LookTheta(angleToShootAt);
         }
+        
+        sPoint = null;
+        navMeshTargetLoc = target.pos.pos;
+        nmAgent.SetDestination(navMeshTargetLoc);
+    }
+
+    void Explore(ClosestPosToExploreAndUtility explore)
+    {
+        print("exploring target at " + explore.pos);
+        sPoint = null;
+        if (navMeshTargetLoc != explore.pos)
+        {
+            navMeshTargetLoc = explore.pos;
+            nmAgent.SetDestination(navMeshTargetLoc);
+        }
     }
 
     float getTravelTimeTo(Vector3 pos)
     {
-        return (Mathf.Abs(transform.position.x - pos.x) + Mathf.Abs(transform.position.y - pos.y)) * ArenaManager.AGENT_SETTINGS.agentSpeed;
+        bool GetPath(NavMeshPath p, Vector3 fromPos, Vector3 toPos, int passableMask)
+        {
+            p.ClearCorners();
+
+            if (NavMesh.CalculatePath(fromPos, toPos, passableMask, p) == false)
+                return false;
+
+            return true;
+        }
+
+        float GetPathLength(NavMeshPath p)
+        {
+            float lng = 0.0f;
+
+            if ((p.status != NavMeshPathStatus.PathInvalid) && (p.corners != null) && (p.corners.Length > 1))
+            {
+                for (int i = 1; i < p.corners.Length; ++i)
+                {
+                    lng += Vector3.Distance(p.corners[i - 1], p.corners[i]);
+                }
+            }
+
+            return lng;
+        }
+
+
+
+        var path = new NavMeshPath();
+        NavMesh.CalculatePath(transform.position, pos, NavMesh.AllAreas, path);
+        return /*(Mathf.Abs(transform.position.x - pos.x) + Mathf.Abs(transform.position.y - pos.y))*/ GetPathLength(path) * ArenaManager.AGENT_SETTINGS.agentSpeed;
     }
 
 
