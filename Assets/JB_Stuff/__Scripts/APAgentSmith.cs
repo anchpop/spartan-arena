@@ -191,11 +191,11 @@ namespace Andre
         float bulletsToDoOneDamage = 3;
         float snagRadius = 5;
         float healthPickupUtilityDanger = 15;
-        float healthPickupUtilitySafer = 7;
+        float healthPickupUtilitySafer = 10;
         float healthPickupUtilitySafe = 1;
         float aggressiveness = 1;
-        float healthPackAttraction = 1;
-        float ammoPackAttraction = 1;
+        float healthPackAttraction = 2;
+        float ammoPackAttraction = 1f;
 
         private void Start()
         {
@@ -303,27 +303,22 @@ namespace Andre
                 Vector3 toClosestEnemy = Vector3.one * 1000;
                 foreach (SensoryInput si in sensed)
                 {
-                    switch (si.sense)
+                    if (si.type == eSensedObjectType.enemy)
                     {
-                        case SensoryInput.eSense.vision:
-                            if (si.type == eSensedObjectType.enemy)
-                            {
-                                sawSomeone = true;
-                                var info = new BotPosition(si.name, si.pos, Time.time, botsSeenLastFrame.Any(oldInfo => oldInfo.name == si.name), si.health);
-                                botsSeenThisFrame.Add(info);
-                                if (!APAgentSmith.MEM.observedPositions.Contains(info))
-                                    APAgentSmith.MEM.observedPositions.Add(info);
-                            }
-                            else if (si.type == eSensedObjectType.item && si.obj is PickUp)
-                            {
-                                PickUp pu = si.obj as PickUp;
-                                var info = new SpawnPointInfo(pu.puType, si.pos);
-                                if (!APAgentSmith.MEM.observedSpawnPoints.Contains(info))
-                                {
-                                    APAgentSmith.MEM.observedSpawnPoints.Add(info);
-                                }
-                            }
-                            break;
+                        sawSomeone = true;
+                        var info = new BotPosition(si.name, si.pos, Time.time, botsSeenLastFrame.Any(oldInfo => oldInfo.name == si.name), si.health);
+                        botsSeenThisFrame.Add(info);
+                        if (!APAgentSmith.MEM.observedPositions.Contains(info))
+                            APAgentSmith.MEM.observedPositions.Add(info);
+                    }
+                    else if (si.type == eSensedObjectType.item && si.obj is PickUp)
+                    {
+                        PickUp pu = si.obj as PickUp;
+                        var info = new SpawnPointInfo(pu.puType, si.pos);
+                        if (!APAgentSmith.MEM.observedSpawnPoints.Contains(info))
+                        {
+                            APAgentSmith.MEM.observedSpawnPoints.Add(info);
+                        }
                     }
                 }
 
@@ -427,6 +422,10 @@ namespace Andre
 
         Vector3? Lead(BotPosition bot)
         {
+            if ((bot.pos - transform.position).magnitude < .15f) // if they're very close to us, don't bother trying to lead them
+            {
+                return bot.pos;
+            }
             if (bot.seenLastFrame)
             {
                 // Get all observed data from this bot, with the most recent data first, 
@@ -467,9 +466,10 @@ namespace Andre
                             print("???");
                         else if (newestPos.pos != oldestPos.pos)
                         {
-                            var targetVelocity = (oldestPos.pos - newestPos.pos) / (oldestPos.timeSeen - newestPos.timeSeen);
+                            var targetVelocity = (oldestPos.pos - newestPos.pos) / (oldestPos.timeSeen - newestPos.timeSeen) * 1.05f; // I notice we tend to undershoot a bit so increase the velocity a little
                             // get the position we'd need to shoot at to hit the target
                             var shouldShootAt = FirstOrderIntercept(transform.position, Vector3.zero, ArenaManager.AGENT_SETTINGS.bulletSpeed, newestPos.pos, targetVelocity);
+
                             return shouldShootAt;
                         }
 
@@ -497,16 +497,11 @@ namespace Andre
                 var shotsRequired = weakestBot.health * bulletsToDoOneDamage;
                 if (ammo < shotsRequired) return null;
 
-
-                if (weakestBot.seenLastFrame)
+                
+                var shouldShootAt = Lead(weakestBot);
+                if (shouldShootAt.HasValue)
                 {
-                    var shouldShootAt = Lead(weakestBot);
-                    if (shouldShootAt.HasValue)
-                    {
-                        return new EnemyToHuntAndUtility(weakestBot, shouldShootAt.Value, (shotsRequired + 5.0f * aggressiveness) / (shotsRequired * 3.0f));
-                    }
-
-
+                    return new EnemyToHuntAndUtility(weakestBot, shouldShootAt.Value, (shotsRequired + 5.0f * aggressiveness) / (shotsRequired * 3.0f));
                 }
 
 
@@ -592,18 +587,6 @@ namespace Andre
             {
                 navMeshTargetLoc = dest;
                 var setSuccess = nmAgent.SetDestination(navMeshTargetLoc);
-                /*
-                var path = new NavMeshPath();
-                var calculatedSucess = NavMesh.CalculatePath(transform.position, dest, NavMesh.AllAreas, path);
-                if (calculatedSucess)
-                {
-                    navMeshTargetLoc = dest;
-                    var setSuccess = nmAgent.SetPath(path);
-                    if (!setSuccess)
-                    {
-                        print("path not set sucessfully!");
-                    }
-                }*/
             }
         }
 
@@ -677,8 +660,18 @@ namespace Andre
             else
             {
                 sPoint = null;
+                // We want to navigate to behind them because it makes it easier to shoot them without them shooting us
+                if (target.shootAtPosition == target.pos.pos)
+                {
 
-                SetDestination(target.pos.pos); // we navigate to them rather than to where they're going to be because we want to stay behind them
+                    SetDestination(target.pos.pos);
+                }
+                else
+                {
+                    var offset = (target.shootAtPosition - target.pos.pos).normalized * -.05f;
+                    SetDestination(target.pos.pos + offset);
+                }
+                
             }
         }
 
