@@ -1,0 +1,747 @@
+generation 0:
+	batch 0:
+		zd0: 
+			bulletsToDoOneDamage: 3.799153
+			snagRadius: 5
+			healthPickupUtilityDanger: 15.06527
+			healthPickupUtilitySafer: 7.252604
+			healthPickupUtilitySafe: 1.582384
+			aggressiveness: 1
+			healthPackAttraction: 3.799153
+			ammoPackAttraction: 1.746192
+
+		zd1:
+			bulletsToDoOneDamage: 3.557519
+			snagRadius: 5
+			healthPickupUtilityDanger: 15
+			healthPickupUtilitySafer: 7.166508
+			healthPickupUtilitySafe: 1
+			aggressiveness: 1.313646
+			healthPackAttraction: 3.557519
+			ammoPackAttraction: 1.953238
+
+		zd2:
+			bulletsToDoOneDamage: 3.200063
+			snagRadius: 5
+			healthPickupUtilityDanger: 15
+			healthPickupUtilitySafer: 7.536654
+			healthPickupUtilitySafe: 1.541922
+			aggressiveness: 1.977178
+			healthPackAttraction: 3.200063
+			ammoPackAttraction: 1
+
+
+		zd3: 
+			bulletsToDoOneDamage: 3.349236
+			snagRadius: 5.915258
+			healthPickupUtilityDanger: 15.74902
+			healthPickupUtilitySafer: 7
+			healthPickupUtilitySafe: 1
+			aggressiveness: 1.626696
+			healthPackAttraction: 3.349236
+			ammoPackAttraction: 1
+
+		zd4: 
+			bulletsToDoOneDamage: 3.311269
+			snagRadius: 5.24936
+			healthPickupUtilityDanger: 15
+			healthPickupUtilitySafer: 7
+			healthPickupUtilitySafe: 1.036586
+			aggressiveness: 1.551087
+			healthPackAttraction: 3.311269
+			ammoPackAttraction: 1.429781
+
+
+		zd5: 
+			bulletsToDoOneDamage: 3
+			snagRadius: 5.859943
+			healthPickupUtilityDanger: 15.60146
+			healthPickupUtilitySafer: 7
+			healthPickupUtilitySafe: 1.378133
+			aggressiveness: 2.043286
+			healthPackAttraction: 3
+			ammoPackAttraction: 1.447163
+
+		zd6:
+			bulletsToDoOneDamage: 3.799153
+			snagRadius: 5
+			healthPickupUtilityDanger: 15.06527
+			healthPickupUtilitySafer: 7.252604
+			healthPickupUtilitySafe: 1.582384
+			aggressiveness: 1
+			healthPackAttraction: 3.799153
+			ammoPackAttraction: 1.746192
+
+		zd7:
+			bulletsToDoOneDamage: 3
+			snagRadius: 5
+			healthPickupUtilityDanger: 15
+			healthPickupUtilitySafer: 7.685393
+			healthPickupUtilitySafe: 1
+			aggressiveness: 2.271673
+			healthPackAttraction: 3
+			ammoPackAttraction: 1
+
+		zd8:
+			bulletsToDoOneDamage: 3.285589
+			snagRadius: 5.478104
+			healthPickupUtilityDanger: 15.1884
+			healthPickupUtilitySafer: 7.293613
+			healthPickupUtilitySafe: 2.062937
+			aggressiveness: 1
+			healthPackAttraction: 3.285589
+			ammoPackAttraction: 1
+
+		zd9:
+			bulletsToDoOneDamage: 3.217713
+			snagRadius: 5
+			healthPickupUtilityDanger: 15
+			healthPickupUtilitySafer: 7
+			healthPickupUtilitySafe: 1
+			aggressiveness: 1.388813
+			healthPackAttraction: 3.217713
+			ammoPackAttraction: 1
+
+		zd10:
+			bulletsToDoOneDamage: 3.217713
+			snagRadius: 5
+			healthPickupUtilityDanger: 15
+			healthPickupUtilitySafer: 7
+			healthPickupUtilitySafe: 1
+			aggressiveness: 1.388813
+			healthPackAttraction: 3.217713
+			ammoPackAttraction: 1
+
+		remarks:
+			zd0 and zd4 are about tied for first, zd5 and zd9 and zd7 are tied for second.
+
+
+	batch 1:
+		zd0: 
+			bulletsToDoOneDamage: 2.650399
+			snagRadius: 4.853796
+			healthPickupUtilityDanger: 14.69405
+			healthPickupUtilitySafer: 6.476979
+			healthPickupUtilitySafe: 0.4715251
+			aggressiveness: 1.544378
+			healthPackAttraction: 2.650399
+			ammoPackAttraction: 1.611458
+
+		zd1: 
+			bulletsToDoOneDamage: 4.147482
+			snagRadius: 4.208251
+			healthPickupUtilityDanger: 14.58576
+			healthPickupUtilitySafer: 6.880293
+			healthPickupUtilitySafe: 1.05366
+			aggressiveness: 0.8898731
+			healthPackAttraction: 4.147482
+			ammoPackAttraction: 0.8670488
+
+		zd2: 
+			bulletsToDoOneDamage: 2.071035
+			snagRadius: 4.681876
+			healthPickupUtilityDanger: 15.28065
+			healthPickupUtilitySafer: 6.210839
+			healthPickupUtilitySafe: 1.529355
+			aggressiveness: 0.9192456
+			healthPackAttraction: 2.071035
+			ammoPackAttraction: 0.8659095
+
+		zd3: 
+			bulletsToDoOneDamage: 2.784217
+			snagRadius: 4.827683
+			healthPickupUtilityDanger: 15.04043
+			healthPickupUtilitySafer: 7.196827
+			healthPickupUtilitySafe: 1.454149
+			aggressiveness: 0.9810328
+			healthPackAttraction: 2.784217
+			ammoPackAttraction: 1.903185
+
+		zd4: 
+			bulletsToDoOneDamage: 2.422838
+			snagRadius: 5.338449
+			healthPickupUtilityDanger: 14.08584
+			healthPickupUtilitySafer: 6.775556
+			healthPickupUtilitySafe: 1.075521
+			aggressiveness: 1.480015
+			healthPackAttraction: 2.422838
+			ammoPackAttraction: 0.3612363
+
+		zd5: 
+			bulletsToDoOneDamage: 1.943745
+			snagRadius: 3.985358
+			healthPickupUtilityDanger: 14.31125
+			healthPickupUtilitySafer: 6.714207
+			healthPickupUtilitySafe: 1.315314
+			aggressiveness: 1.612746
+			healthPackAttraction: 1.943745
+			ammoPackAttraction: 1.77106
+
+		zd6: 
+			bulletsToDoOneDamage: 2.703246
+			snagRadius: 5.076373
+			healthPickupUtilityDanger: 14.3524
+			healthPickupUtilitySafer: 7.13006
+			healthPickupUtilitySafe: 1.156497
+			aggressiveness: 1.598956
+			healthPackAttraction: 2.703246
+			ammoPackAttraction: 0.9369621
+
+		zd7: 
+			bulletsToDoOneDamage: 3.17991
+			snagRadius: 4.851123
+			healthPickupUtilityDanger: 14.46409
+			healthPickupUtilitySafer: 6.496215
+			healthPickupUtilitySafe: 1.454815
+			aggressiveness: 1.048335
+			healthPackAttraction: 3.17991
+			ammoPackAttraction: 0.534674
+
+		zd8: 
+			bulletsToDoOneDamage: 2.44872
+			snagRadius: 5.735195
+			healthPickupUtilityDanger: 15.24594
+			healthPickupUtilitySafer: 7.168077
+			healthPickupUtilitySafe: 0.9205849
+			aggressiveness: 1.720564
+			healthPackAttraction: 2.44872
+			ammoPackAttraction: 0.1746048
+
+		zd9: 
+			bulletsToDoOneDamage: 2.400819
+			snagRadius: 5.537305
+			healthPickupUtilityDanger: 14.78821
+			healthPickupUtilitySafer: 7.000184
+			healthPickupUtilitySafe: 1.808889
+			aggressiveness: 1.642322
+			healthPackAttraction: 2.400819
+			ammoPackAttraction: 2.226261
+
+		zd10: 
+			bulletsToDoOneDamage: 3.304039
+			snagRadius: 3.860766
+			healthPickupUtilityDanger: 14.89829
+			healthPickupUtilitySafer: 7.550069
+			healthPickupUtilitySafe: 0.9353018
+			aggressiveness: 0.3769305
+			healthPackAttraction: 3.304039
+			ammoPackAttraction: 0
+
+		remarks: ZD9 and ZD2 are tied for first, then comes ZD0 in second
+
+
+	batch 2:
+		zd0: 
+			bulletsToDoOneDamage: 4.503265
+			snagRadius: 4.976082
+			healthPickupUtilityDanger: 15.93606
+			healthPickupUtilitySafer: 7.212268
+			healthPickupUtilitySafe: 0.8741859
+			aggressiveness: 0.06999016
+			healthPackAttraction: 4.503265
+			ammoPackAttraction: 1.418348
+
+		zd1:
+			bulletsToDoOneDamage: 2.894798
+			snagRadius: 5.25203
+			healthPickupUtilityDanger: 15.72453
+			healthPickupUtilitySafer: 7.059471
+			healthPickupUtilitySafe: 0.6797972
+			aggressiveness: 0.8406684
+			healthPackAttraction: 2.894798
+			ammoPackAttraction: 1.442102
+
+		zd2:
+			bulletsToDoOneDamage: 2.891694
+			snagRadius: 4.412261
+			healthPickupUtilityDanger: 14.02632
+			healthPickupUtilitySafer: 7.63754
+			healthPickupUtilitySafe: 1.366676
+			aggressiveness: 1.575485
+			healthPackAttraction: 2.891694
+			ammoPackAttraction: 0.6084136
+
+		zd3:
+			bulletsToDoOneDamage: 2.593575
+			snagRadius: 4.562015
+			healthPickupUtilityDanger: 14.52655
+			healthPickupUtilitySafer: 6.882897
+			healthPickupUtilitySafe: 0.2363751
+			aggressiveness: 0.862179
+			healthPackAttraction: 2.593575
+			ammoPackAttraction: 2.060079
+
+		zd4:
+			bulletsToDoOneDamage: 3.018262
+			snagRadius: 4.557137
+			healthPickupUtilityDanger: 14.83722
+			healthPickupUtilitySafer: 7.943116
+			healthPickupUtilitySafe: 1.919052
+			aggressiveness: 0.4878845
+			healthPackAttraction: 3.018262
+			ammoPackAttraction: 1.943931
+
+		zd5:
+			bulletsToDoOneDamage: 2.61913
+			snagRadius: 4.326097
+			healthPickupUtilityDanger: 14.72048
+			healthPickupUtilitySafer: 6.610111
+			healthPickupUtilitySafe: 1.048775
+			aggressiveness: 1.423359
+			healthPackAttraction: 2.61913
+			ammoPackAttraction: 0.5268649
+
+		zd6:
+			bulletsToDoOneDamage: 3.018306
+			snagRadius: 4.163605
+			healthPickupUtilityDanger: 15.27828
+			healthPickupUtilitySafer: 5.73796
+			healthPickupUtilitySafe: 1.14461
+			aggressiveness: 0.7345957
+			healthPackAttraction: 3.018306
+			ammoPackAttraction: 0.1869936
+
+		zd7:
+			bulletsToDoOneDamage: 2.439681
+			snagRadius: 5.27197
+			healthPickupUtilityDanger: 15.41329
+			healthPickupUtilitySafer: 7.112622
+			healthPickupUtilitySafe: 0.3441994
+			aggressiveness: 0.7319295
+			healthPackAttraction: 2.439681
+			ammoPackAttraction: 1.361354
+
+		zd8:
+			bulletsToDoOneDamage: 3.489549
+			snagRadius: 5.817707
+			healthPickupUtilityDanger: 15.4069
+			healthPickupUtilitySafer: 7.693754
+			healthPickupUtilitySafe: 1.654427
+			aggressiveness: 1.119872
+			healthPackAttraction: 3.489549
+			ammoPackAttraction: 0.6387055
+
+		zd9:
+			bulletsToDoOneDamage: 2.829836
+			snagRadius: 5.037278
+			healthPickupUtilityDanger: 14.04283
+			healthPickupUtilitySafer: 6.8696
+			healthPickupUtilitySafe: 0.4833775
+			aggressiveness: 1.095452
+			healthPackAttraction: 2.829836
+			ammoPackAttraction: 0.3574217
+
+		zd10:
+			bulletsToDoOneDamage: 3.111401
+			snagRadius: 4.984858
+			healthPickupUtilityDanger: 14.92714
+			healthPickupUtilitySafer: 7.435358
+			healthPickupUtilitySafe: 0.001109183
+			aggressiveness: 0.4354978
+			healthPackAttraction: 3.111401
+			ammoPackAttraction: 0.259131
+
+		remarks: ZD0 is the clear winner, followed by a tie between ZD5, ZD3, and ZD4
+
+		Next gen seed:
+			1:
+				bulletsToDoOneDamage: 3.55
+				snagRadius: 5.1
+				healthPickupUtilityDanger: 15.03
+				healthPickupUtilitySafer: 7.13
+				healthPickupUtilitySafe: 1.28
+				aggressiveness: 1.3
+				healthPackAttraction: 3.5
+				ammoPackAttraction: 1.5
+
+			2: 
+				bulletsToDoOneDamage: 2.2
+				snagRadius: 5.2
+				healthPickupUtilityDanger: 14.9
+				healthPickupUtilitySafer: 6.9
+				healthPickupUtilitySafe: 1.7
+				aggressiveness: 1.3
+				healthPackAttraction: 2.2
+				ammoPackAttraction: 1
+
+			3:
+				bulletsToDoOneDamage: 4.50
+				snagRadius: 5
+				healthPickupUtilityDanger: 16
+				healthPickupUtilitySafer: 7.2
+				healthPickupUtilitySafe: 0.87
+				aggressiveness: 0.06
+				healthPackAttraction: 4.5
+				ammoPackAttraction: 1.4
+
+Generation 1:
+	batch 0:
+		zd0: 
+			bulletsToDoOneDamage: 3
+			snagRadius: 5
+			healthPickupUtilityDanger: 15
+			healthPickupUtilitySafer: 7
+			healthPickupUtilitySafe: 1
+			aggressiveness: 1
+			healthPackAttraction: 3
+			ammoPackAttraction: 1
+
+		zd1: 
+			bulletsToDoOneDamage: 4.503067
+			snagRadius: 4.592508
+			healthPickupUtilityDanger: 14.87627
+			healthPickupUtilitySafer: 6.460083
+			healthPickupUtilitySafe: 0.4703962
+			aggressiveness: 1.125057
+			healthPackAttraction: 4.503067
+			ammoPackAttraction: 1.242413
+
+		zd2: 
+			bulletsToDoOneDamage: 2.870381
+			snagRadius: 4.344002
+			healthPickupUtilityDanger: 14.11792
+			healthPickupUtilitySafer: 6.470938
+			healthPickupUtilitySafe: 0.06715679
+			aggressiveness: 0.94855
+			healthPackAttraction: 2.870381
+			ammoPackAttraction: 0.4887635
+
+		zd3: 
+			bulletsToDoOneDamage: 1.945952
+			snagRadius: 6.777623
+			healthPickupUtilityDanger: 14.41696
+			healthPickupUtilitySafer: 7.826546
+			healthPickupUtilitySafe: 1.293831
+			aggressiveness: 0.9420792
+			healthPackAttraction: 1.945952
+			ammoPackAttraction: 1.291436
+
+		zd4: 
+			bulletsToDoOneDamage: 4.492669
+			snagRadius: 6.236586
+			healthPickupUtilityDanger: 15.96229
+			healthPickupUtilitySafer: 5.702801
+			healthPickupUtilitySafe: 0.7395012
+			aggressiveness: 1.616839
+			healthPackAttraction: 4.492669
+			ammoPackAttraction: 0
+
+		zd5: 
+			bulletsToDoOneDamage: 4.625522
+			snagRadius: 4.574336
+			healthPickupUtilityDanger: 14.95388
+			healthPickupUtilitySafer: 9.871714
+			healthPickupUtilitySafe: 1.525407
+			aggressiveness: 0.4357246
+			healthPackAttraction: 4.625522
+			ammoPackAttraction: 2.683545
+
+		zd6: 
+			bulletsToDoOneDamage: 1.668485
+			snagRadius: 3.657161
+			healthPickupUtilityDanger: 15.97848
+			healthPickupUtilitySafer: 6.958543
+			healthPickupUtilitySafe: 1.068531
+			aggressiveness: 2.980464
+			healthPackAttraction: 1.668485
+			ammoPackAttraction: 3.145416
+
+		zd7: 
+			bulletsToDoOneDamage: 1.942759
+			snagRadius: 5.171304
+			healthPickupUtilityDanger: 13.32051
+			healthPickupUtilitySafer: 6.939716
+			healthPickupUtilitySafe: 0.7057879
+			aggressiveness: 1.061318
+			healthPackAttraction: 1.942759
+			ammoPackAttraction: 2.295059
+
+		zd8: 
+			bulletsToDoOneDamage: 1.248545
+			snagRadius: 6.330647
+			healthPickupUtilityDanger: 17.34867
+			healthPickupUtilitySafer: 7.438591
+			healthPickupUtilitySafe: 0.5216825
+			aggressiveness: 3.700097
+			healthPackAttraction: 1.248545
+			ammoPackAttraction: 0.3404733
+
+		zd9: 
+			bulletsToDoOneDamage: 3.653256
+			snagRadius: 3.129526
+			healthPickupUtilityDanger: 16.99723
+			healthPickupUtilitySafer: 7.749629
+			healthPickupUtilitySafe: 0
+			aggressiveness: 0
+			healthPackAttraction: 3.653256
+			ammoPackAttraction: 3.355423
+
+		zd10: 
+			bulletsToDoOneDamage: 3.578984
+			snagRadius: 6.098169
+			healthPickupUtilityDanger: 15.13603
+			healthPickupUtilitySafer: 4.73921
+			healthPickupUtilitySafe: 1.847327
+			aggressiveness: 0
+			healthPackAttraction: 3.578984
+			ammoPackAttraction: 3.905459
+
+		remarks: ZD9 and ZD2 were the clear winnners (tied for first)
+
+	batch 1:
+		zd0: 
+			bulletsToDoOneDamage: 3
+			snagRadius: 5
+			healthPickupUtilityDanger: 15
+			healthPickupUtilitySafer: 7
+			healthPickupUtilitySafe: 1
+			aggressiveness: 1
+			healthPackAttraction: 3
+			ammoPackAttraction: 1
+
+		zd1: 
+			bulletsToDoOneDamage: 3.180771
+			snagRadius: 4.421303
+			healthPickupUtilityDanger: 16.40145
+			healthPickupUtilitySafer: 8.115818
+			healthPickupUtilitySafe: 1.214001
+			aggressiveness: 3.243012
+			healthPackAttraction: 3.180771
+			ammoPackAttraction: 3.022171
+
+		zd2: 
+			bulletsToDoOneDamage: 1.936751
+			snagRadius: 4.031686
+			healthPickupUtilityDanger: 12.58846
+			healthPickupUtilitySafer: 7.669493
+			healthPickupUtilitySafe: 1.395841
+			aggressiveness: 1.264252
+			healthPackAttraction: 1.936751
+			ammoPackAttraction: 2.185702
+
+		zd3: 
+			bulletsToDoOneDamage: 5.126267
+			snagRadius: 5.834205
+			healthPickupUtilityDanger: 15.26018
+			healthPickupUtilitySafer: 7.154577
+			healthPickupUtilitySafe: 1.806575
+			aggressiveness: 1.220248
+			healthPackAttraction: 5.126267
+			ammoPackAttraction: 0
+
+		zd4: 
+			bulletsToDoOneDamage: 3.475454
+			snagRadius: 4.03902
+			healthPickupUtilityDanger: 15.87353
+			healthPickupUtilitySafer: 6.539741
+			healthPickupUtilitySafe: 2.336221
+			aggressiveness: 3.311515
+			healthPackAttraction: 3.475454
+			ammoPackAttraction: 4.382893
+
+		zd5: 
+			bulletsToDoOneDamage: 3.687718
+			snagRadius: 4.923669
+			healthPickupUtilityDanger: 15.00672
+			healthPickupUtilitySafer: 9.162312
+			healthPickupUtilitySafe: 1.351399
+			aggressiveness: 0
+			healthPackAttraction: 3.687718
+			ammoPackAttraction: 2.697267
+
+		zd6: 
+			bulletsToDoOneDamage: 2.885629
+			snagRadius: 3.441119
+			healthPickupUtilityDanger: 14.09746
+			healthPickupUtilitySafer: 7.191517
+			healthPickupUtilitySafe: 0.5583354
+			aggressiveness: 1.07198
+			healthPackAttraction: 2.885629
+			ammoPackAttraction: 0.4378389
+
+		zd7: 
+			bulletsToDoOneDamage: 4.05097
+			snagRadius: 4.909226
+			healthPickupUtilityDanger: 15.59081
+			healthPickupUtilitySafer: 6.030424
+			healthPickupUtilitySafe: 0.9802734
+			aggressiveness: 0.1871184
+			healthPackAttraction: 4.05097
+			ammoPackAttraction: 0
+
+		zd8: 
+			bulletsToDoOneDamage: 0.5270801
+			snagRadius: 4.942318
+			healthPickupUtilityDanger: 14.22633
+			healthPickupUtilitySafer: 7.371201
+			healthPickupUtilitySafe: 0.2252505
+			aggressiveness: 0.3640385
+			healthPackAttraction: 0.5270801
+			ammoPackAttraction: 0.5285816
+
+		zd9: 
+			bulletsToDoOneDamage: 4.247673
+			snagRadius: 5.639535
+			healthPickupUtilityDanger: 14.64702
+			healthPickupUtilitySafer: 7.093201
+			healthPickupUtilitySafe: 1.313443
+			aggressiveness: 0.2096314
+			healthPackAttraction: 4.247673
+			ammoPackAttraction: 1.681233
+
+		zd10: 
+			bulletsToDoOneDamage: 7.198056
+			snagRadius: 4.696026
+			healthPickupUtilityDanger: 17.22161
+			healthPickupUtilitySafer: 9.479721
+			healthPickupUtilitySafe: 2.181661
+			aggressiveness: 0.5440228
+			healthPackAttraction: 7.198056
+			ammoPackAttraction: 2.536955
+
+		remarks: zd6, zd4, and zd2 were the all-around winners
+
+	batch 3:
+
+		zd0:
+			bulletsToDoOneDamage: 3
+			snagRadius: 5
+			healthPickupUtilityDanger: 15
+			healthPickupUtilitySafer: 7
+			healthPickupUtilitySafe: 1
+			aggressiveness: 1
+			healthPackAttraction: 3
+			ammoPackAttraction: 1
+
+		zd1:
+			bulletsToDoOneDamage: 1.729975
+			snagRadius: 6.603393
+			healthPickupUtilityDanger: 14.32147
+			healthPickupUtilitySafer: 7.433374
+			healthPickupUtilitySafe: 1.35945
+			aggressiveness: 0.3024844
+			healthPackAttraction: 1.729975
+			ammoPackAttraction: 2.956452
+
+		zd2:
+			bulletsToDoOneDamage: 2.378144
+			snagRadius: 7.259194
+			healthPickupUtilityDanger: 15.22985
+			healthPickupUtilitySafer: 5.369706
+			healthPickupUtilitySafe: 3.319092
+			aggressiveness: 2.008031
+			healthPackAttraction: 2.378144
+			ammoPackAttraction: 2.919197
+
+		zd3:
+			bulletsToDoOneDamage: 3.86962
+			snagRadius: 4.769092
+			healthPickupUtilityDanger: 14.94789
+			healthPickupUtilitySafer: 6.397491
+			healthPickupUtilitySafe: 1.218154
+			aggressiveness: 0.8474694
+			healthPackAttraction: 3.86962
+			ammoPackAttraction: 2.659277
+
+		zd4:
+			bulletsToDoOneDamage: 3.709137
+			snagRadius: 2.955161
+			healthPickupUtilityDanger: 14.15591
+			healthPickupUtilitySafer: 7.675869
+			healthPickupUtilitySafe: 2.355747
+			aggressiveness: 2.268837
+			healthPackAttraction: 3.709137
+			ammoPackAttraction: 1.989091
+
+		zd5:
+			bulletsToDoOneDamage: 2.909374
+			snagRadius: 4.864758
+			healthPickupUtilityDanger: 15.88627
+			healthPickupUtilitySafer: 8.837361
+			healthPickupUtilitySafe: 0.2440604
+			aggressiveness: 1.171523
+			healthPackAttraction: 2.909374
+			ammoPackAttraction: 0.4039894
+
+		zd6:
+			bulletsToDoOneDamage: 1.75429
+			snagRadius: 7.910321
+			healthPickupUtilityDanger: 13.75544
+			healthPickupUtilitySafer: 6.073749
+			healthPickupUtilitySafe: 0
+			aggressiveness: 2.588183
+			healthPackAttraction: 1.75429
+			ammoPackAttraction: 3.508388
+
+		zd7:
+			bulletsToDoOneDamage: 2.586834
+			snagRadius: 5.693855
+			healthPickupUtilityDanger: 14.95488
+			healthPickupUtilitySafer: 7.169375
+			healthPickupUtilitySafe: 2.588843
+			aggressiveness: 0
+			healthPackAttraction: 2.586834
+			ammoPackAttraction: 0
+
+		zd8:
+			bulletsToDoOneDamage: 0.8435179
+			snagRadius: 7.784058
+			healthPickupUtilityDanger: 15.04312
+			healthPickupUtilitySafer: 7.194261
+			healthPickupUtilitySafe: 2.161909
+			aggressiveness: 3.25444
+			healthPackAttraction: 0.8435179
+			ammoPackAttraction: 1.149165
+
+		zd9:
+			bulletsToDoOneDamage: 4.421435
+			snagRadius: 7.16776
+			healthPickupUtilityDanger: 17.28127
+			healthPickupUtilitySafer: 6.10473
+			healthPickupUtilitySafe: 2.570607
+			aggressiveness: 0.9025115
+			healthPackAttraction: 4.421435
+			ammoPackAttraction: 2.135618
+
+		zd10:
+			bulletsToDoOneDamage: 7.10772
+			snagRadius: 2.926222
+			healthPickupUtilityDanger: 16.09154
+			healthPickupUtilitySafer: 8.690564
+			healthPickupUtilitySafe: 1.033731
+			aggressiveness: 0.6173119
+			healthPackAttraction: 7.10772
+			ammoPackAttraction: 1.786957
+
+		remarks: zd8, zd5, and zd7 were the clear winners
+
+	next gen seed:
+		1:
+			bulletsToDoOneDamage: 3.4
+			snagRadius: 3.9
+			healthPickupUtilityDanger: 15.5
+			healthPickupUtilitySafer: 7.1
+			healthPickupUtilitySafe: 0
+			aggressiveness: 0.5
+			healthPackAttraction: 3.2
+			ammoPackAttraction: 1.9
+
+		2:
+			bulletsToDoOneDamage: 12.8
+			snagRadius: 3.8
+			healthPickupUtilityDanger: 14.5
+			healthPickupUtilitySafer: 7.2
+			healthPickupUtilitySafe: 1.395841
+			aggressiveness: 2.2
+			healthPackAttraction: 2.8
+			ammoPackAttraction: 2.185702
+		
+		3:
+			bulletsToDoOneDamage: 2.1
+			snagRadius: 7
+			healthPickupUtilityDanger: 15.2
+			healthPickupUtilitySafer: 7.3
+			healthPickupUtilitySafe: 1.5
+			aggressiveness: 2.3
+			healthPackAttraction: 1
+			ammoPackAttraction: .5

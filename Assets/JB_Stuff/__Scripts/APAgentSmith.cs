@@ -162,6 +162,7 @@ namespace Andre
         public float ammoPackAttractionStored;
 
         public bool alreadyRandomized;
+        public string Stats;
     }
 
     public class APAgentSmith : Agent
@@ -176,7 +177,7 @@ namespace Andre
         private Vector3 navMeshTargetLoc = new Vector3(-99999, -99999, -99999);
         private SpawnPoint sPoint;
 
-        static Memory MEM;
+        public static Memory MEM;
 
 
         [TextArea]
@@ -231,14 +232,15 @@ namespace Andre
             Stats = "";
             if (!APAgentSmith.MEM.alreadyRandomized)
             {
-                bulletsToDoOneDamage += Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f);
-                snagRadius += Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f);
-                healthPickupUtilityDanger += Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f);
-                healthPickupUtilitySafer += Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f);
-                healthPickupUtilitySafe += Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f);
-                aggressiveness += Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f);
-                healthPackAttraction += Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f);
-                ammoPackAttraction += Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f) + Random.Range(-.5f, .5f);
+
+                bulletsToDoOneDamage = Mathf.Max(0, bulletsToDoOneDamage);
+                snagRadius = Mathf.Max(0, snagRadius);
+                healthPickupUtilityDanger = Mathf.Max(0, healthPickupUtilityDanger);
+                healthPickupUtilitySafer = Mathf.Max(0, healthPickupUtilitySafer);
+                healthPickupUtilitySafe = Mathf.Max(0, healthPickupUtilitySafe);
+                aggressiveness = Mathf.Max(0, aggressiveness);
+                healthPackAttraction = Mathf.Max(0, healthPackAttraction);
+                ammoPackAttraction = Mathf.Max(0, ammoPackAttraction);
 
 
                 APAgentSmith.MEM.bulletsToDoOneDamageStored = bulletsToDoOneDamage;
@@ -271,6 +273,7 @@ namespace Andre
             Stats += "aggressiveness: " + aggressiveness + "\n";
             Stats += "healthPackAttraction: " + bulletsToDoOneDamage + "\n";
             Stats += "ammoPackAttraction: " + ammoPackAttraction + "\n";
+            APAgentSmith.MEM.Stats = Stats;
         }
 
         public override void AIUpdate(List<SensoryInput> inputs)
